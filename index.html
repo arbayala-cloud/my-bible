@@ -57,8 +57,38 @@ textarea{background:var(--bg);color:var(--fg)}
 #hlSheet input[type=range]{width:100%;accent-color:var(--fg)}#hlSheet label{font-weight:bold;display:block;margin-top:8px}
 #hlCur{display:inline-block;width:28px;height:28px;border-radius:6px;border:1px solid var(--fg);vertical-align:middle}
 #hlSheet .row button{padding:10px 4px;font-size:15px}
+
+header{padding:0 6px;height:54px;justify-content:space-between;border-bottom:1px solid var(--line);transition:transform .25s ease;backdrop-filter:blur(8px)}
+header.hide{transform:translateY(-100%)}
+.ib{width:44px;height:44px;border:0!important;background:transparent!important;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0;font-size:20px;border-radius:50%!important;color:var(--fg)}
+#menuBtn span{display:block;width:20px;height:2px;background:var(--fg);border-radius:2px}
+#refBtn{border:0;background:transparent;font-size:18px;letter-spacing:.04em;padding:8px 14px;border-radius:22px}#refBtn:active,.ib:active{background:var(--bmbg)!important}
+.car{font-size:.7em;color:var(--muted);margin-left:6px}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}#scrim.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:min(82vw,320px);background:var(--bg);z-index:21;transform:translateX(-105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);box-shadow:4px 0 24px rgba(0,0,0,.18);padding:env(safe-area-inset-top) 0 0;overflow:auto}
+#drawer.on{transform:none}.dh{display:flex;justify-content:space-between;align-items:center;padding:22px 12px 18px 22px;border-bottom:1px solid var(--line)}
+.dt{font-size:22px;letter-spacing:.03em}.ds{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.dl{padding:8px}.dl button{display:flex;align-items:center;gap:16px;width:100%;border:0;background:transparent;font-size:17px;padding:14px 14px;border-radius:12px;text-align:left}.dl button:active{background:var(--bmbg)}
+.dl i{font-style:normal;width:26px;text-align:center;font-size:19px}.dl hr{border:0;border-top:1px solid var(--line);margin:8px 14px}
+#picker{position:fixed;inset:0;background:var(--bg);z-index:22;overflow:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}#picker.on{transform:none}
+.ph{position:sticky;top:0;background:var(--bg);display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 6px;border-bottom:1px solid var(--line)}#pkT{font-size:18px;letter-spacing:.04em}
+.pg{padding:6px 16px 24px}.pg h3{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:normal;margin:20px 4px 10px}
+.gb{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.gc{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.gb button,.gc button{border:1px solid var(--line);border-radius:12px;padding:12px 10px;font-size:15px;text-align:left;background:var(--bg)}.gc button{text-align:center;padding:14px 0;font-size:17px}
+.gb button.cur,.gc button.cur{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#title{margin:28px 0 22px;line-height:1.1}#title .bk{display:block;font-variant:small-caps;letter-spacing:.2em;font-size:15px;color:var(--muted);text-transform:lowercase}#title .cn{display:block;font-size:56px;font-weight:300;margin-top:6px}
+nav.pn{gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}nav.pn button{flex:1;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:15px;letter-spacing:.03em;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.sheet,#panel{padding:20px 20px 40px}.sheet h2,#panel h2{font-weight:normal;letter-spacing:.03em}
+button{border-color:var(--line);border-radius:10px;transition:background .15s}
+#bar{border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.12);border-radius:16px 16px 0 0}
+#hlSheet{border-top:1px solid var(--line);border-radius:16px 16px 0 0}
 </style></head><body>
-<header><select id="book"></select><select id="chap"></select><button id="bmBtn" aria-label="Bookmarks">🔖</button><button id="ntBtn" aria-label="Notes">📝</button><button id="hlBtn" aria-label="Highlights">🖍</button><button id="setBtn" aria-label="Settings">⚙️</button></header>
+<header id="hdr"><button id="menuBtn" class="ib" aria-label="Menu"><span></span><span></span><span></span></button><button id="refBtn"><span id="refTxt"></span><span class="car">▾</span></button><span class="ib sp2"></span>
+<div style="display:none"><select id="book"></select><select id="chap"></select><button id="bmBtn"></button><button id="ntBtn"></button><button id="hlBtn"></button><button id="setBtn"></button></div></header>
+<div id="scrim"></div>
+<aside id="drawer" aria-hidden="true"><div class="dh"><div><div class="dt">My Holy Bible</div><div class="ds">King James Version</div></div><button id="drX" class="ib" aria-label="Close">✕</button></div>
+<nav class="dl"><button data-a="bmBtn"><i>🔖</i>Bookmarks</button><button data-a="hlBtn"><i>🖍</i>Highlights</button><button data-a="ntBtn"><i>📝</i>Notes</button><button data-a="jr"><i>📔</i>Journal</button><hr><button data-a="setBtn"><i>⚙️</i>Reading Settings</button><button data-a="bk"><i>💾</i>Backup</button></nav></aside>
+<div id="picker"><div class="ph"><button id="pkBack" class="ib">‹</button><div id="pkT">Books</div><button id="pkX" class="ib">✕</button></div><div id="pkBody"></div></div>
 <main><h1 id="title"></h1><div id="text"></div>
 <nav class="pn"><button id="prev">‹ Prev</button><button id="next">Next ›</button></nav></main>
 <div id="panel"><button id="close">✕ Close</button><h2>Bookmarks</h2><ul id="list"></ul></div>
@@ -125,7 +155,7 @@ BIBLE.forEach((b,i)=>$('book').add(new Option(b[0],i)));
 function fillChap(){const s=$('chap');s.innerHTML='';BIBLE[state.b][1].forEach((_,i)=>s.add(new Option('Ch '+(i+1),i)))}
 function render(scrollV){
   $('book').value=state.b;fillChap();$('chap').value=state.c;
-  $('title').textContent=BIBLE[state.b][0]+' '+(state.c+1);
+  $('title').innerHTML='<span class="bk"></span><span class="cn"></span>';$('title').firstChild.textContent=BIBLE[state.b][0];$('title').lastChild.textContent=state.c+1;$('refTxt').textContent=BIBLE[state.b][0]+' '+(state.c+1);
   const vs=BIBLE[state.b][1][state.c],t=$('text');t.innerHTML='';
   vs.forEach((txt,i)=>{const p=document.createElement('p');p.className='v'+(bookmarks[key(state.b,state.c,i)]?' bm':'');p.dataset.v=i;
     p.innerHTML='<sup>'+(i+1)+'</sup>';fillV(p,txt,state.b+'-'+state.c+'-'+i);if(notes[key(state.b,state.c,i)])addNM(p);t.appendChild(p);paintV(i)});
@@ -311,4 +341,23 @@ $('setBtn').onclick=()=>{$('bar').classList.remove('open');$('setSheet').classLi
 $('setClose').onclick=()=>$('setSheet').classList.remove('open');
 $('setReset').onclick=()=>{S=Object.assign({},SDEF);Store.set('settings',S);applyS();toast('Settings reset')};
 applyS();
+</script>
+<script>
+(function(){const $=id=>document.getElementById(id);const dr=$('drawer'),sc=$('scrim');
+const openD=()=>{dr.classList.add('on');sc.classList.add('on')},closeD=()=>{dr.classList.remove('on');sc.classList.remove('on')};
+$('menuBtn').onclick=openD;$('drX').onclick=closeD;sc.onclick=()=>{closeD();};
+let sx=null;dr.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});dr.addEventListener('touchend',e=>{if(sx!=null&&sx-e.changedTouches[0].clientX>60)closeD();sx=null});
+dr.querySelectorAll('.dl button').forEach(b=>b.onclick=()=>{closeD();const a=b.dataset.a;
+ if(a==='jr'){$('ntBtn').click();$('tabJ').click()}else if(a==='bk'){$('ntBtn').click();setTimeout(()=>$('exp').scrollIntoView({behavior:'smooth'}),50)}else if(a==='ntBtn'){$('ntBtn').click();$('tabV').click()}else $(a).click()});
+const pk=$('picker'),body=$('pkBody');let mode='b';
+function books(){mode='b';$('pkT').textContent='Choose a Book';$('pkBack').style.visibility='hidden';const cur=+$('book').value;body.innerHTML='';const g=document.createElement('div');g.className='pg';
+ [['Old Testament',0,39],['New Testament',39,66]].forEach(([n,a,z])=>{const h=document.createElement('h3');h.textContent=n;g.appendChild(h);const d=document.createElement('div');d.className='gb';
+ for(let i=a;i<z&&i<BIBLE.length;i++){const b=document.createElement('button');b.textContent=BIBLE[i][0];if(i===cur)b.className='cur';b.onclick=()=>chaps(i);d.appendChild(b)}g.appendChild(d)});body.appendChild(g);
+ const c=body.querySelector('.cur');if(c)c.scrollIntoView({block:'center'})}
+function chaps(bi){mode='c';$('pkT').textContent=BIBLE[bi][0];$('pkBack').style.visibility='visible';body.innerHTML='';pk.scrollTop=0;const g=document.createElement('div');g.className='pg';const h=document.createElement('h3');h.textContent='Chapter';g.appendChild(h);const d=document.createElement('div');d.className='gc';
+ const same=bi===+$('book').value,cc=+$('chap').value;
+ BIBLE[bi][1].forEach((_,i)=>{const b=document.createElement('button');b.textContent=i+1;if(same&&i===cc)b.className='cur';b.onclick=()=>{if(!same){$('book').value=bi;$('book').dispatchEvent(new Event('change'))}$('chap').value=i;$('chap').dispatchEvent(new Event('change'));pk.classList.remove('on');scrollTo(0,0)};d.appendChild(b)});g.appendChild(d);body.appendChild(g)}
+$('refBtn').onclick=()=>{pk.classList.add('on');chaps(+$('book').value)};$('pkBack').onclick=books;$('pkX').onclick=()=>pk.classList.remove('on');
+let ly=scrollY;addEventListener('scroll',()=>{const y=scrollY,h=$('hdr');if(y>ly+6&&y>80)h.classList.add('hide');else if(y<ly-6)h.classList.remove('hide');ly=y},{passive:true});
+})();
 </script></body></html>
