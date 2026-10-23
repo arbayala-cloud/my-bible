@@ -10,7 +10,9 @@ header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--
 select,button{font-family:inherit;font-size:16px;padding:8px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);border-radius:6px}
 #book{flex:1;min-width:0}main{max-width:var(--maxw);margin:auto;padding:12px var(--padx) 90px;text-align:var(--align)}
 h1{text-align:center;font-weight:normal;letter-spacing:.05em;margin:.5em 0}
-.v{padding:4px 6px;border-radius:4px;cursor:pointer;-webkit-user-select:none;user-select:none;margin:2px 0}
+.v{padding:4px 6px;border-radius:4px;cursor:pointer;-webkit-user-select:text;user-select:text;margin:2px 0}
+.v sup,.v .nm{-webkit-user-select:none;user-select:none}
+#hlist li .ht{margin:6px 0;font-size:17px;line-height:1.6;cursor:pointer}#hlist li .ht span{border-radius:3px;padding:1px 2px}#hlist li .row button{padding:8px 4px;font-size:14px}
 .v sup{color:var(--muted);font-size:.65em;margin-right:4px}
 .v.bm{border-left:4px solid var(--mark);background:var(--bmbg);font-weight:600}
 .v.bm::after{content:" \1F516";font-size:.8em}
@@ -56,18 +58,18 @@ textarea{background:var(--bg);color:var(--fg)}
 #hlCur{display:inline-block;width:28px;height:28px;border-radius:6px;border:1px solid var(--fg);vertical-align:middle}
 #hlSheet .row button{padding:10px 4px;font-size:15px}
 </style></head><body>
-<header><select id="book"></select><select id="chap"></select><button id="bmBtn" aria-label="Bookmarks">🔖</button><button id="ntBtn" aria-label="Notes">📝</button><button id="setBtn" aria-label="Settings">⚙️</button></header>
+<header><select id="book"></select><select id="chap"></select><button id="bmBtn" aria-label="Bookmarks">🔖</button><button id="ntBtn" aria-label="Notes">📝</button><button id="hlBtn" aria-label="Highlights">🖍</button><button id="setBtn" aria-label="Settings">⚙️</button></header>
 <main><h1 id="title"></h1><div id="text"></div>
 <nav class="pn"><button id="prev">‹ Prev</button><button id="next">Next ›</button></nav></main>
 <div id="panel"><button id="close">✕ Close</button><h2>Bookmarks</h2><ul id="list"></ul></div>
-<div id="bar"><span class="lbl" id="barRef"></span><button id="barBm">🔖 Bookmark</button><button id="barNote">📝 Note</button><button id="barHl">🖍 Highlight</button><button class="x" id="barX">✕</button></div>
+<div id="bar"><span class="lbl" id="barRef"></span><button id="barHl">🖍 Highlight</button><button id="barNote">📝 Note</button><button id="barCopy">📋 Copy</button><button class="x" id="barX">✕</button></div>
 <div id="noteSheet" class="sheet"><button id="noteClose">✓ Done</button><h2 id="noteRef"></h2><p class="vt" id="noteVerse"></p>
 <textarea id="noteText" placeholder="Write your note on this verse…"></textarea><div class="saved" id="noteSaved"></div>
 <div class="row"><button id="noteSave">💾 Save</button><button id="noteDel">🗑 Delete</button></div></div>
 <div id="notesPanel" class="sheet"><button id="npClose">✕ Close</button><h2>My Notes</h2>
-<div class="tabs"><button id="tabV" class="on">Verse Notes</button><button id="tabJ">Journal</button><button id="tabH">🖍 Highlights</button></div>
+<div class="tabs"><button id="tabV" class="on">Verse Notes</button><button id="tabJ">Journal</button></div>
 <div id="paneV"><ul id="nlist" style="list-style:none;padding:0"></ul></div>
-<div id="paneH" style="display:none"><ul id="hlist" style="list-style:none;padding:0"></ul></div><div id="paneJ" style="display:none"><button id="jNew" style="width:100%">＋ New journal entry</button><ul id="jlist" style="list-style:none;padding:0"></ul></div>
+<div id="paneJ" style="display:none"><button id="jNew" style="width:100%">＋ New journal entry</button><ul id="jlist" style="list-style:none;padding:0"></ul></div>
 <h3>Backup</h3><p class="prev">Your notes, bookmarks and highlights are saved on this phone only. Save a backup file to keep them safe or move them to a new phone.</p>
 <div class="row"><button id="exp">⬇ Export backup</button><button id="imp">⬆ Import backup</button></div><input type="file" id="impFile" accept=".json,application/json" style="display:none"></div>
 <div id="jSheet" class="sheet"><button id="jClose">✓ Done</button><h2>Journal</h2><div class="prev" id="jDate"></div>
@@ -93,6 +95,7 @@ textarea{background:var(--bg);color:var(--fg)}
 <div class="sw">Red letters (words of Jesus) <input type="checkbox" id="sRed"></div>
 <div class="sw">Verse numbers <input type="checkbox" id="sNum"></div>
 <div class="row"><button id="setReset">↺ Reset to defaults</button></div></div>
+<div id="hlPage" class="sheet"><button id="hpClose">✕ Close</button><h2>🖍 My Highlights</h2><ul id="hlist" style="list-style:none;padding:0"></ul></div>
 <div id="hlSheet"><p class="hint" id="hlHint"></p>
 <div class="row" id="hlSelRow"><button id="hlAll">Whole verse</button><button id="hlOne">Pick words</button></div>
 <div class="sws" id="hlPre"></div><div class="prev" id="hlRecL">Recent colors</div><div class="sws" id="hlRec"></div>
@@ -135,22 +138,41 @@ function toggle(i){const k=key(state.b,state.c,i);
   state.v=i;Store.set('pos',state)}
 function addNM(p){if(p.querySelector('.nm'))return;const s=document.createElement('span');s.className='nm';s.textContent='📝';s.title='Open note';p.appendChild(s)}
 function markNote(i){const p=$('text').children[i];if(!p)return;const k=key(state.b,state.c,i);if(notes[k])addNM(p);else{const s=p.querySelector('.nm');s&&s.remove()}}
-// tap verse = action bar (Bookmark / Note); press-and-hold = quick bookmark; tap 📝 = open note
-let sel=null;
-function closeBar(){$('bar').classList.remove('open');document.querySelectorAll('.v.sel').forEach(x=>x.classList.remove('sel'));sel=null}
-function openBar(i){closeBar();sel=i;$('text').children[i].classList.add('sel');$('barRef').textContent=refName(state.b,state.c,i);
-  $('barBm').textContent=bookmarks[key(state.b,state.c,i)]?'🔖 Remove':'🔖 Bookmark';$('barNote').textContent=notes[key(state.b,state.c,i)]?'📝 Edit note':'📝 Note';$('bar').classList.add('open')}
-$('barBm').onclick=()=>{if(sel!=null)toggle(sel);closeBar()};
-$('barNote').onclick=()=>{const i=sel;closeBar();if(i!=null)openNote(state.b,state.c,i)};
-$('barX').onclick=closeBar;
-let hold=null,held=false;
-$('text').addEventListener('pointerdown',e=>{const p=e.target.closest('.v');if(hv!=null||!p||e.target.closest('.nm'))return;held=false;hold=setTimeout(()=>{held=true;closeBar();toggle(+p.dataset.v);navigator.vibrate&&navigator.vibrate(30)},500)});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>$('text').addEventListener(ev,()=>clearTimeout(hold)));
-$('text').addEventListener('click',e=>{if(e.target.closest('.nm')){const p=e.target.closest('.v');closeBar();openNote(state.b,state.c,+p.dataset.v);return}
-  const p=e.target.closest('.v');if(!p)return;if(held){held=false;return}const i=+p.dataset.v;const w=e.target.closest('.w');
-  if(hv!=null){if(i===hv&&w&&!hEdit)pickWord(w);else closeHl();return}
-  if(w&&w.dataset.h!==''&&w.dataset.h!=null&&w.dataset.h!==undefined&&w.style.background){openHl(i,{j:+w.dataset.h});return}
-  if(sel===i)closeBar();else openBar(i)});
+// tap verse = bookmark only; press-and-hold = select words (phone's own selection) -> bottom bar; tap 📝 = open note
+let pend=null,hOpen=false,barDown=false,selT=null,lpT=null,lpXY=null,lpFired=false;
+function closeBar(){$('bar').classList.remove('open');if(!hOpen)pend=null}
+function pendRef(P){const a=P[0],z=P[P.length-1];return refName(state.b,state.c,a.i)+(z.i!==a.i?'–'+(z.i+1):'')}
+function pendText(P){return P.map(r=>wordsOf($('text').children[r.i]).slice(r.s,r.e+1).map(w=>w.textContent).join(' ')).join(' ')}
+function openBar(P){pend=P;const n=P.reduce((t,r)=>t+r.e-r.s+1,0);$('barRef').textContent=pendRef(P)+' · '+(n===1?'1 word':n+' words');
+  $('barNote').textContent=notes[key(state.b,state.c,P[0].i)]?'📝 Edit note':'📝 Note';$('bar').classList.add('open')}
+function rangeToPend(r){const T=$('text');if(!T.contains(r.commonAncestorContainer)&&r.commonAncestorContainer!==T)return null;
+  const m=new Map();T.querySelectorAll('.w').forEach(w=>{if(!r.intersectsNode(w))return;
+    if(w.contains(r.endContainer)&&r.endOffset===0&&!(w.contains(r.startContainer)))return;
+    if(w.contains(r.startContainer)&&r.startOffset>=w.textContent.length&&!(w.contains(r.endContainer)))return;
+    const i=+w.parentNode.dataset.v,x=+w.dataset.i,o=m.get(i);if(o){o.s=Math.min(o.s,x);o.e=Math.max(o.e,x)}else m.set(i,{i,s:x,e:x})});
+  const P=[...m.values()].sort((a,b)=>a.i-b.i);return P.length?P:null}
+document.addEventListener('selectionchange',()=>{clearTimeout(selT);selT=setTimeout(()=>{if(hOpen)return;const s=getSelection();
+  if(s.rangeCount&&!s.isCollapsed){const P=rangeToPend(s.getRangeAt(0));if(P){openBar(P);return}}
+  if(!barDown&&!lpFired&&$('bar').classList.contains('open'))setTimeout(()=>{if(!barDown&&getSelection().isCollapsed&&!lpFired)closeBar()},400)},250)});
+$('bar').addEventListener('pointerdown',()=>{barDown=true;setTimeout(()=>barDown=false,800)});
+function clearSel(){const s=getSelection();s&&s.removeAllRanges()}
+$('barHl').onclick=()=>{if(pend)openHl(pend)};
+$('barNote').onclick=()=>{const P=pend;clearSel();lpFired=false;closeBar();if(P)openNote(state.b,state.c,P[0].i)};
+$('barCopy').onclick=async()=>{if(!pend)return;const t=pendText(pend)+' — '+pendRef(pend)+' KJV';
+  try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}
+  toast('Copied');clearSel();lpFired=false;closeBar()};
+$('barX').onclick=()=>{clearSel();lpFired=false;closeBar()};
+// fallback: if the phone doesn't start a selection on long-press, use the whole verse
+$('text').addEventListener('pointerdown',e=>{const p=e.target.closest('.v');if(hOpen||!p||e.target.closest('.nm'))return;lpFired=false;lpXY=[e.clientX,e.clientY];clearTimeout(lpT);
+  lpT=setTimeout(()=>{lpFired=true;navigator.vibrate&&navigator.vibrate(20);setTimeout(()=>{const s=getSelection();if(s.isCollapsed||!s.rangeCount||!rangeToPend(s.getRangeAt(0))){const i=+p.dataset.v;openBar([{i,s:0,e:wordsOf(p).length-1}])}},450)},550)});
+$('text').addEventListener('pointermove',e=>{if(lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)clearTimeout(lpT)});
+['pointerup','pointercancel'].forEach(ev=>$('text').addEventListener(ev,()=>{clearTimeout(lpT);lpXY=null}));
+$('text').addEventListener('click',e=>{const p=e.target.closest('.v');
+  if(hOpen){closeHl();return}
+  if(e.target.closest('.nm')){e.stopPropagation();clearSel();closeBar();openNote(state.b,state.c,+p.dataset.v);return}
+  if(lpFired){lpFired=false;return}
+  const s=getSelection();if(!s.isCollapsed||$('bar').classList.contains('open')){clearSel();closeBar();return}
+  if(!p)return;toggle(+p.dataset.v)});
 
 // ---- Highlights ----
 const PRE=['#ffeb3b','#ffb300','#ff7043','#f06292','#ba68c8','#7986cb','#4fc3f7','#4db6ac','#81c784','#c0ca33','#a1887f','#90a4ae'];
@@ -163,13 +185,11 @@ function paintV(i,prev){const p=$('text').children[i];if(!p)return;const L=hls[k
   if(prev)for(let x=prev.s;x<=prev.e;x++)col[x]=[prev,-1];
   ws.forEach((w,x)=>{if(col[x])w.style.background=rgba(col[x][0].c,col[x][0].a);w.dataset.h=col[x]?col[x][1]:'';
     const s=w.nextSibling;if(s&&s.classList&&s.classList.contains('sp')&&col[x]&&col[x+1]&&col[x][0]===col[x+1][0])s.style.background=rgba(col[x][0].c,col[x][0].a)});
-  if(hv===i&&hsel&&!hEdit)for(let x=hsel.s;x<=hsel.e;x++)ws[x]&&ws[x].classList.add('pick')}
+  if(hOpen&&pend)pend.forEach(r=>{if(r.i===i)for(let x=r.s;x<=r.e;x++)ws[x]&&ws[x].classList.add('pick')})}
 function setRuns(k,n,fn){const m=Array(n).fill(null);(hls[k]||[]).forEach(h=>{for(let x=h.s;x<=h.e&&x<n;x++)m[x]={c:h.c,a:h.a}});fn(m);
   const out=[];m.forEach((v,x)=>{const l=out[out.length-1];if(!v)return;if(l&&l.e===x-1&&l.c===v.c&&l.a===v.a)l.e=x;else out.push({s:x,e:x,c:v.c,a:v.a})});
   if(out.length)hls[k]=out;else delete hls[k];Store.set('highlights',hls)}
-function preview(){if(hv==null)return;const p={s:0,e:0,c:hcol,a:hlA};
-  if(hEdit){const h=(hls[key(state.b,state.c,hv)]||[])[hEdit.j];if(h){h.c=hcol;h.a=hlA}paintV(hv);return}
-  Object.assign(p,hsel);paintV(hv,p)}
+function preview(){if(!hOpen||!pend)return;pend.forEach(r=>paintV(r.i,{s:r.s,e:r.e,c:hcol,a:hlA}))}
 function drawSw(){const mk=(el,arr)=>{el.innerHTML='';arr.forEach(c=>{const b=document.createElement('b');b.style.background=c;b.dataset.c=c;if(c===hcol)b.className='on';el.appendChild(b)})};
   mk($('hlPre'),PRE);mk($('hlRec'),recent);$('hlRecL').style.display=$('hlRec').style.display=recent.length?'':'none';
   $('hlCur').style.background=rgba(hcol,hlA);$('hlNative').value=hcol;$('hlA').value=Math.round(hlA*100);$('hlAV').textContent=Math.round(hlA*100)+'%'}
@@ -177,26 +197,19 @@ function setCol(c){hcol=c;drawSw();preview()}
 ['hlPre','hlRec'].forEach(id=>$(id).onclick=e=>{const b=e.target.closest('b');if(b)setCol(b.dataset.c)});
 $('hlA').oninput=e=>{hlA=+e.target.value/100;Store.set('hlAlpha',hlA);drawSw();preview()};
 $('hlNative').oninput=e=>setCol(e.target.value);
-function hint(){const ws=wordsOf($('text').children[hv]);
-  if(hEdit){$('hlHint').textContent='Change this highlight’s color, or remove it.';return}
-  const n=hsel.e-hsel.s+1;$('hlHint').textContent=(n===ws.length?'Whole verse selected. ':(n===1?'1 word selected. ':n+' words selected. '))+(anchor!=null?'Tap another word to stretch to it.':'Tap any word to highlight just that word.')}
-function openHl(i,edit){closeBar();hv=i;hEdit=edit||null;const p=$('text').children[i],n=wordsOf(p).length;
-  if(edit){const h=hls[key(state.b,state.c,i)][edit.j];hsel={s:h.s,e:h.e};hcol=h.c;hlA=h.a}else{hsel={s:0,e:n-1};anchor=null;document.body.classList.add('hlmode')}
-  $('hlSelRow').style.display=edit?'none':'';$('hlDel').style.display=edit?'':'none';
-  p.classList.add('sel');document.body.classList.add('hlopen');drawSw();hint();preview();$('hlSheet').classList.add('open');
-  setTimeout(()=>{const r=p.getBoundingClientRect(),hd=document.querySelector('header').offsetHeight,h=$('hlSheet').offsetHeight;if(r.bottom>innerHeight-h-10||r.top<hd)scrollBy({top:r.top-hd-10})},30)}
-function closeHl(){const i=hv;hv=null;hsel=null;hEdit=null;anchor=null;document.body.classList.remove('hlmode','hlopen');$('hlSheet').classList.remove('open');$('wheelBox').classList.remove('open');
-  document.querySelectorAll('.v.sel').forEach(x=>x.classList.remove('sel'));if(i!=null)paintV(i)}
+function pendHasHl(P){return P.some(r=>(hls[key(state.b,state.c,r.i)]||[]).some(h=>h.s<=r.e&&h.e>=r.s))}
+function hint(){const n=pend.reduce((t,r)=>t+r.e-r.s+1,0);$('hlHint').textContent=pendRef(pend)+' · '+(n===1?'1 word':n+' words')+'. Pick a color, then tap ✓ Done.'}
+function openHl(P){clearSel();lpFired=false;$('bar').classList.remove('open');pend=P;hOpen=true;
+  $('hlSelRow').style.display='none';$('hlDel').style.display=pendHasHl(P)?'':'none';
+  document.body.classList.add('hlopen');drawSw();hint();preview();$('hlSheet').classList.add('open');
+  setTimeout(()=>{const p=$('text').children[P[0].i],r=p.getBoundingClientRect(),hd=document.querySelector('header').offsetHeight,h=$('hlSheet').offsetHeight;if(r.top>innerHeight-h-10||r.top<hd)scrollBy({top:r.top-hd-10})},30)}
+function closeHl(){const P=pend;hOpen=false;pend=null;document.body.classList.remove('hlmode','hlopen');$('hlSheet').classList.remove('open');$('wheelBox').classList.remove('open');
+  P&&P.forEach(r=>paintV(r.i))}
 function pushRecent(){recent=[hcol,...recent.filter(c=>c!==hcol)].slice(0,8);Store.set('hlRecent',recent)}
-$('barHl').onclick=()=>{if(sel!=null)openHl(sel)};
-$('hlAll').onclick=()=>{hsel={s:0,e:wordsOf($('text').children[hv]).length-1};anchor=null;hint();preview()};
-$('hlOne').onclick=()=>{toast('Tap a word, or tap the first and last word')};
-$('hlOk').onclick=()=>{const k=key(state.b,state.c,hv);pushRecent();
-  if(hEdit){Store.set('highlights',hls);toast('Highlight updated')}else{const n=wordsOf($('text').children[hv]).length,{s,e}=hsel;setRuns(k,n,m=>{for(let x=s;x<=e;x++)m[x]={c:hcol,a:hlA}});toast('Highlighted 🖍')}
-  closeHl()};
-$('hlDel').onclick=()=>{const k=key(state.b,state.c,hv),n=wordsOf($('text').children[hv]).length,{s,e}=hsel;setRuns(k,n,m=>{for(let x=s;x<=e;x++)m[x]=null});toast('Highlight removed');closeHl()};
-$('hlCancel').onclick=()=>{if(hEdit){hls=Store.get('highlights',{})}closeHl()};
-function pickWord(w){const x=+w.dataset.i;if(anchor==null){anchor=x;hsel={s:x,e:x}}else{hsel={s:Math.min(anchor,x),e:Math.max(anchor,x)};anchor=null}hint();preview()}
+function applyP(fn){pend.forEach(r=>{const n=wordsOf($('text').children[r.i]).length;setRuns(key(state.b,state.c,r.i),n,m=>{for(let x=r.s;x<=r.e;x++)m[x]=fn()})})}
+$('hlOk').onclick=()=>{pushRecent();applyP(()=>({c:hcol,a:hlA}));toast('Highlighted 🖍');closeHl()};
+$('hlDel').onclick=()=>{applyP(()=>null);toast('Highlight removed');closeHl()};
+$('hlCancel').onclick=closeHl;
 // color wheel (hue = angle, saturation = distance from center, brightness slider)
 let hsvV=1;const W=$('wheel'),wc=W.getContext('2d');
 function hsv2hex(h,s,v){const f=n=>{const k=(n+h/60)%6;return v-v*s*Math.max(0,Math.min(k,4-k,1))};return '#'+[f(5),f(3),f(1)].map(x=>Math.round(x*255).toString(16).padStart(2,'0')).join('')}
@@ -208,10 +221,16 @@ $('hlVal').oninput=e=>{hsvV=+e.target.value/100;drawWheel();if(wp)setCol(hsv2hex
 $('hlWheelBtn').onclick=()=>{const b=$('wheelBox');b.classList.toggle('open');if(b.classList.contains('open'))drawWheel()};
 // highlights list
 function showHls(){const l=$('hlist');l.innerHTML='';const ks=Object.keys(hls).map(k=>k.split(':').map(Number)).sort((a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2]);
-  if(!ks.length)l.innerHTML='<li class="empty">No highlights yet. Tap a verse, then tap 🖍 Highlight.</li>';
-  ks.forEach(([b,c,v])=>hls[key(b,c,v)].forEach(h=>{const ws=BIBLE[b][1][c][v].split(/\s+/).filter(Boolean),li=document.createElement('li');li.innerHTML='<span class="ref"></span><br><span></span>';
-    li.children[0].textContent='🖍 '+refName(b,c,v);const s=li.children[2];s.textContent=ws.slice(h.s,h.e+1).join(' ');s.style.background=rgba(h.c,h.a);
-    li.onclick=()=>{$('notesPanel').classList.remove('open');state={b,c,v};render(v)};l.appendChild(li)}))}
+  if(!ks.length)l.innerHTML='<li class="empty">No highlights yet. Press and hold on a verse, drag to pick your words, then tap 🖍 Highlight.</li>';
+  ks.forEach(([b,c,v])=>hls[key(b,c,v)].slice().forEach(h=>{const ws=BIBLE[b][1][c][v].split(/\s+/).filter(Boolean),li=document.createElement('li');
+    li.innerHTML='<span class="ref"></span><div class="ht"></div><div class="row"><button class="hc">🎨 Change color</button><button class="hd">🗑 Remove</button></div>';
+    li.querySelector('.ref').textContent='🖍 '+refName(b,c,v);const s=li.querySelector('.ht');const sp=document.createElement('span');sp.textContent=ws.slice(h.s,h.e+1).join(' ');sp.style.background=rgba(h.c,h.a);s.appendChild(sp);
+    const jump=()=>{$('hlPage').classList.remove('open');state={b,c,v};render(v)};
+    li.querySelector('.ref').onclick=jump;s.onclick=jump;
+    li.querySelector('.hc').onclick=()=>{jump();hcol=h.c;hlA=h.a;openHl([{i:v,s:h.s,e:h.e}])};
+    li.querySelector('.hd').onclick=()=>{const k=key(b,c,v);hls[k]=hls[k].filter(x=>x!==h);if(!hls[k].length)delete hls[k];Store.set('highlights',hls);if(b===state.b&&c===state.c)paintV(v);toast('Highlight removed');showHls()};
+    l.appendChild(li)}))}
+$('hlBtn').onclick=()=>{closeBar();showHls();$('hlPage').classList.add('open')};$('hpClose').onclick=()=>$('hlPage').classList.remove('open');
 // ---- Verse note editor (auto-saves as you type) ----
 let cur=null,saveT=null;
 function openNote(b,c,v){cur=[b,c,v];const k=key(b,c,v);$('noteRef').textContent='📝 '+refName(b,c,v);$('noteVerse').textContent=BIBLE[b][1][c][v];
@@ -232,8 +251,8 @@ function showNotes(tab){const l=$('nlist');l.innerHTML='';
     li.children[0].textContent='📝 '+refName(b,c,v);li.children[2].textContent=n.text.slice(0,120)+(n.text.length>120?'…':'');li.children[4].textContent='“'+BIBLE[b][1][c][v].slice(0,60)+'…”';
     li.onclick=()=>{$('notesPanel').classList.remove('open');state={b,c,v};render(v);openNote(b,c,v)};l.appendChild(li)});
   showJournal();if(tab)setTab(tab);$('notesPanel').classList.add('open')}
-function setTab(t){$('tabH').classList.toggle('on',t==='h');$('paneH').style.display=t==='h'?'':'none';if(t==='h')showHls();$('tabV').classList.toggle('on',t==='v');$('tabJ').classList.toggle('on',t==='j');$('paneV').style.display=t==='v'?'':'none';$('paneJ').style.display=t==='j'?'':'none'}
-$('tabV').onclick=()=>setTab('v');$('tabJ').onclick=()=>setTab('j');$('tabH').onclick=()=>setTab('h');
+function setTab(t){$('tabV').classList.toggle('on',t==='v');$('tabJ').classList.toggle('on',t==='j');$('paneV').style.display=t==='v'?'':'none';$('paneJ').style.display=t==='j'?'':'none'}
+$('tabV').onclick=()=>setTab('v');$('tabJ').onclick=()=>setTab('j');
 $('ntBtn').onclick=()=>{closeBar();showNotes()};$('npClose').onclick=()=>$('notesPanel').classList.remove('open');
 // ---- Journal (general notes, dated entries) ----
 let jcur=null,jT=null;
@@ -257,7 +276,7 @@ $('imp').onclick=()=>$('impFile').click();
 $('impFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='my-bible')throw 0;
   Object.assign(bookmarks,d.bookmarks||{});Object.assign(notes,d.notes||{});Object.assign(hls,d.highlights||{});Store.set('highlights',hls);(d.journal||[]).forEach(j=>{if(!journal.some(x=>x.id===j.id))journal.push(j)});
   Store.set('bookmarks',bookmarks);Store.set('notes',notes);Store.set('journal',journal);render(state.v);showNotes();toast('Backup restored')}catch(err){alert('That file is not a My Bible backup.')}e.target.value=''};
-$('text').addEventListener('contextmenu',e=>e.preventDefault());
+
 $('book').onchange=()=>{closeBar();closeHl();state={b:+$('book').value,c:0,v:null};render()};
 $('chap').onchange=()=>{state.c=+$('chap').value;state.v=null;render()};
 function go(d){closeBar();closeHl();let{b,c}=state;c+=d;if(c<0){if(--b<0)return;c=BIBLE[b][1].length-1}else if(c>=BIBLE[b][1].length){if(++b>=BIBLE.length)return;c=0}state={b,c,v:null};render()}
