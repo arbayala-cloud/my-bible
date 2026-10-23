@@ -213,6 +213,7 @@ body.nofn .fn{display:none}
 #voList{list-style:none;padding:0;margin:8px 0}#voList li{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}
 #voList li .vn{flex:1}#voList li b{display:block;font-weight:600;font-size:15px}#voList li small{color:var(--muted);font-size:12px}
 #voList li.on b::before{content:'✓ ';}#voList li button{font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:16px}
+#voList li.vopt .vomode button{font-size:14px}#voList li .vn b{word-break:break-word}
 #voList li.vog{cursor:default;border:0;padding:16px 4px 4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
 #voList li.vopt{cursor:default;gap:12px}#voList li.vopt .seg{flex:1}#voList li.vopt .seg button{border-radius:16px}.votip{border:0!important;font-size:13px!important;padding-top:14px!important}
 .vomsg{color:var(--muted);font-size:14px;line-height:1.6}
@@ -684,7 +685,14 @@ const SP=[0.75,1,1.25,1.5];let rate=+(localStorage.getItem('mybible.lsRate')||1)
 let playing=false,paused=false,idx=-1,gen=0,auto=false,ka=null,lb=-1,lc=-1;
 const REG={US:'United States',GB:'United Kingdom',AU:'Australia',IN:'India',IE:'Ireland',ZA:'South Africa',CA:'Canada',NZ:'New Zealand',NG:'Nigeria',SG:'Singapore',PH:'Philippines',KE:'Kenya'};
 const NL=l=>(l||'').replace('_','-');
-function voices(){if(!SS)return[];const s=new Set();return SS.getVoices().filter(v=>{if(!/^en/i.test(v.lang))return false;const k=NL(v.lang).toLowerCase()+'|'+v.name;if(s.has(k))return false;s.add(k);return true})}
+const GM='aub aud gbb gbd rjs end ene iol iom tpd'.split(' '),GF='iob iog sfg tpc tpf gba gbc gbg fis aua auc ena enc'.split(' ');
+const NM={M:'Daniel Alex Fred Tom Oliver Arthur Gordon Aaron Evan Nathan Rishi Lee Ralph Junior Albert Bruce Reed Rocko Grandpa David Mark George Guy Ryan William Prabhat Liam Connor Luke Abeo Christopher Eric Roger Steffan Thomas Elliot Andrew Brian Davis Jason Tony Ravi Ethan Male'.split(' '),F:'Samantha Karen Moira Tessa Veena Victoria Allison Ava Susan Serena Martha Catherine Nicky Zoe Joelle Noelle Kathy Princess Vicki Shelley Sandy Flo Grandma Zira Hazel Aria Jenny Sonia Libby Natasha Neerja Clara Emily Leah Ezinne Michelle Ana Heera Linda Jessa Isla Female'.split(' ')};
+function vcode(v){const m=v.name.match(/^[a-z]{2}-[a-z]{2,}-x-([a-z]+)-(local|network)$/i)||(v.voiceURI||'').match(/-x-([a-z]+)-(local|network)/i);return m?[m[1].toLowerCase(),m[2].toLowerCase()]:null}
+function gender(v){const c=vcode(v);if(c){if(GM.includes(c[0]))return'Male';if(GF.includes(c[0]))return'Female';return''}
+ const w=v.name.replace(/[()\-,]/g,' ').split(/\s+/);if(w.some(x=>NM.M.includes(x)))return'Male';if(w.some(x=>NM.F.includes(x)))return'Female';if(/^Google US English$/.test(v.name))return'Female';return''}
+function voices(){if(!SS)return[];const m=new Map();SS.getVoices().forEach(v=>{if(!/^en/i.test(v.lang))return;const c=vcode(v);const k=NL(v.lang).toLowerCase()+'|'+(c?c[0]:v.name);const o=m.get(k);
+ if(!o||(o.localService===false&&v.localService!==false)||(c&&c[1]==='local'&&vcode(o)&&vcode(o)[1]==='network'))m.set(k,v)});return[...m.values()]}
+let gf=localStorage.getItem('mybible.lsGF')||'all',mode=localStorage.getItem('mybible.lsMode')||'d',hrName=localStorage.getItem('mybible.lsHR')||'',LV=null,A=null,hcur=null;
 const ACC={US:'American',GB:'British',UK:'British',AU:'Australian',IN:'Indian',IE:'Irish',ZA:'South African',CA:'Canadian',NZ:'New Zealand',NG:'Nigerian',SG:'Singaporean',PH:'Filipino',KE:'Kenyan',TZ:'Tanzanian',GH:'Ghanaian',JM:'Jamaican',HK:'Hong Kong',PK:'Pakistani',SCOTLAND:'Scottish'};
 function rc(l){return((NL(l).split('-')[1])||'').toUpperCase()}
 function accent(l){const r=rc(l);return ACC[r]||(r?'English ('+r+')':'English')}
@@ -701,7 +709,8 @@ function speakSeq(parts,done){let k=0;const nx=()=>{if(k>=parts.length){done();r
 function startKA(){clearInterval(ka);ka=setInterval(()=>{if(playing&&!paused&&SS.speaking&&!/android/i.test(navigator.userAgent)){SS.pause();SS.resume()}},10000)}
 function mark(){document.querySelectorAll('#text .v.ls-cur').forEach(e=>e.classList.remove('ls-cur'));if(idx<0||!playing&&!paused)return;const el=$('text').children[idx];if(!el)return;el.classList.add('ls-cur');
  const r=el.getBoundingClientRect(),bb=$('lsBar').offsetHeight+10,top=($('hdr')?$('hdr').offsetHeight:0)+10;if(r.top<top||r.bottom>innerHeight-bb)el.scrollIntoView({block:'center',behavior:'smooth'})}
-function ref(){$('lsRef').textContent=BIBLE[state.b][0]+' '+(state.c+1)+(idx>=0?':'+(idx+1):'')+(paused?' · paused':playing?' · reading':'')}
+function ref(){if(hcur){$('lsRef').textContent=BIBLE[state.b][0]+' '+(state.c+1)+' · '+(hcur.d?'Dramatized':'Read')+' by '+hcur.r.split(',')[0]+(hcur.r.includes(',')?' & others':'')+(hcur.a!==hcur.z?' (ch. '+hcur.a+'–'+hcur.z+')':'')+(paused?' · paused':'');return}
+ $('lsRef').textContent=BIBLE[state.b][0]+' '+(state.c+1)+(idx>=0?':'+(idx+1):'')+(paused?' · paused':playing?' · reading':'')}
 function setIcon(){$('lsPI').setAttribute('d',playing&&!paused?'M7 5h4v14H7zM13 5h4v14h-4z':'M8 5v14l11-7z');$('lsPlay').setAttribute('aria-label',playing&&!paused?'Pause':'Play');ref()}
 function play(i,intro){gen++;SS.cancel();playing=true;paused=false;const n=BIBLE[state.b][1][state.c].length;
  if(i>=n){nextCh();return}idx=Math.max(0,i);lb=state.b;lc=state.c;mark();setIcon();const g=gen;
@@ -709,33 +718,61 @@ function play(i,intro){gen++;SS.cancel();playing=true;paused=false;const n=BIBLE
  if(intro)SS.speak(mk(BIBLE[state.b][0].replace(/^1 /,'First ').replace(/^2 /,'Second ').replace(/^3 /,'Third ')+', chapter '+(state.c+1)+'.',go));else go()}
 function nextCh(){let b=state.b,c=state.c+1;if(c>=BIBLE[b][1].length){b++;c=0}if(b>=BIBLE.length){stop();return}
  auto=true;state={b,c,v:null};render();auto=false;play(0,true)}
-function stop(){gen++;if(SS)SS.cancel();playing=false;paused=false;mark();setIcon()}
-function toggle(){if(!SS)return;if(playing&&!paused){gen++;SS.cancel();paused=true;mark();setIcon();return}
+function loadLV(){return LV?Promise.resolve(LV):fetch('lv.json').then(r=>r.json()).then(j=>LV=j)}
+function hopts(b,c){const L=(LV&&LV[b+'-'+c])||[];const cc=c+1;return L.map(x=>({u:'https://archive.org/download/'+x[0],r:x[1],a:x[2],z:x[3],d:!!x[4]})).sort((p,q)=>(p.a!==cc)-(q.a!==cc)||q.d-p.d||(p.z-p.a)-(q.z-q.a))}
+function hpick(b,c){const o=hopts(b,c);return o.find(x=>hrName&&x.r===hrName)||o[0]||null}
+function hPlay(o){if(!A){A=new Audio();A.preload='none';A.onended=()=>{if(!hcur)return;const nb=state.b,nz=hcur.z;let b=nb,c=nz;if(c>=BIBLE[b][1].length){b++;c=0}if(b>=BIBLE.length){stop();return}auto=true;state={b,c,v:null};render();auto=false;hStart()};
+  A.onerror=()=>{if(!hcur||!playing)return;const alt=hopts(state.b,state.c).filter(x=>x.u!==hcur.u&&!hcur.tried.includes(x.u));if(alt.length){alt[0].tried=hcur.tried.concat(hcur.u);hPlay(alt[0])}else{toast('Recording unavailable, using device voice');hcur=null;play(0,true)}}}
+ hcur=o;o.tried=o.tried||[];A.src=o.u;A.playbackRate=rate;playing=true;paused=false;idx=-1;lb=state.b;lc=state.c;mark();setIcon();A.play().catch(()=>{})}
+function hStart(){loadLV().then(()=>{const o=hpick(state.b,state.c);if(!o){toast('No human recording for this chapter, using device voice');hcur=null;play(0,true);return}hPlay(o)}).catch(()=>{toast('Couldn\'t load recordings, using device voice');play(0,true)})}
+function stop(){gen++;if(SS)SS.cancel();if(A){A.pause()}hcur=null;playing=false;paused=false;mark();setIcon()}
+function toggle(){if(mode==='h'){if(hcur&&playing&&!paused){A.pause();paused=true;setIcon();return}if(hcur&&paused&&lb===state.b&&lc===state.c){A.play().catch(()=>{});paused=false;setIcon();return}if(SS)SS.cancel();hStart();return}if(!SS)return;if(playing&&!paused){gen++;SS.cancel();paused=true;mark();setIcon();return}
  if(paused&&lb===state.b&&lc===state.c){play(idx,false);return}const s=state.v!=null&&state.v<BIBLE[state.b][1][state.c].length?state.v:0;play(s,true)}
-function openBar(){if(!SS){toast('Read aloud isn\'t supported in this browser');return}$('lsBar').classList.add('open');document.body.classList.add('ls-on');$('lsSpd').textContent=rate+'×';idx=-1;ref();if(!playing)toggle()}
+function openBar(){if(!SS&&mode!=='h'){toast('Read aloud isn\'t supported in this browser');return}$('lsBar').classList.add('open');document.body.classList.add('ls-on');$('lsSpd').textContent=rate+'×';idx=-1;ref();if(!playing)toggle()}
 $('lsHdr').onclick=openBar;
 $('lsPlay').onclick=toggle;$('lsStop').onclick=()=>{stop();idx=-1;ref()};
-$('lsPrev').onclick=()=>{if(idx<0)return toggle();play(Math.max(0,idx-1),false)};
-$('lsNext').onclick=()=>{if(idx<0)return toggle();play(idx+1,false)};
+$('lsPrev').onclick=()=>{if(hcur){A.currentTime=Math.max(0,A.currentTime-15);return}if(idx<0)return toggle();play(Math.max(0,idx-1),false)};
+$('lsNext').onclick=()=>{if(hcur){A.currentTime=A.currentTime+15;return}if(idx<0)return toggle();play(idx+1,false)};
 $('lsX').onclick=()=>{stop();idx=-1;$('lsBar').classList.remove('open');document.body.classList.remove('ls-on')};
-$('lsSpd').onclick=()=>{rate=SP[(SP.indexOf(rate)+1)%SP.length];localStorage.setItem('mybible.lsRate',rate);$('lsSpd').textContent=rate+'×';if(playing&&!paused)play(idx,false)};
-function drawVo(){const L=$('voList'),V=voices();L.innerHTML='';
+$('lsSpd').onclick=()=>{rate=SP[(SP.indexOf(rate)+1)%SP.length];localStorage.setItem('mybible.lsRate',rate);$('lsSpd').textContent=rate+'×';if(hcur){A.playbackRate=rate;return}if(playing&&!paused)play(idx,false)};
+function drawVo(){const L=$('voList');L.innerHTML='';
+ const T=document.createElement('li');T.className='vopt';T.innerHTML='<div class="seg vomode"><button data-m="d">Device voices</button><button data-m="h">Human reader</button></div>';
+ T.querySelectorAll('button').forEach(b=>{if(b.dataset.m===mode)b.className='on';b.onclick=()=>{if(mode===b.dataset.m)return;stop();idx=-1;mode=b.dataset.m;localStorage.setItem('mybible.lsMode',mode);drawVo();ref()}});L.appendChild(T);
+ if(mode==='h'){drawHR(L);return}
+ const V=voices();
  const P=document.createElement('li');P.className='vopt';P.innerHTML='<span>Pitch</span><div class="seg"></div>';[['Low',0.8],['Normal',1],['High',1.2]].forEach(([n,p])=>{const b=document.createElement('button');b.textContent=n;if(p===pitch)b.className='on';b.onclick=()=>{pitch=p;localStorage.setItem('mybible.lsPitch',p);drawVo();if(playing&&!paused)play(idx,false)};P.lastChild.appendChild(b)});L.appendChild(P);
- const tip='<li class="vomsg votip">Want more voices? Android Settings › Text-to-speech › Google › Install voice data › English.</li>';
+ const F=document.createElement('li');F.className='vopt';F.innerHTML='<span>Show</span><div class="seg"></div>';[['All','all'],['Female','Female'],['Male','Male']].forEach(([n,k])=>{const b=document.createElement('button');b.textContent=n;if(k===gf)b.className='on';b.onclick=()=>{gf=k;localStorage.setItem('mybible.lsGF',k);drawVo()};F.lastChild.appendChild(b)});L.appendChild(F);
+ const tip='<li class="vomsg votip"><b>Only hearing one voice?</b> Many Android phones list voices that aren\'t downloaded yet, so they all fall back to the same speaker. To get them: Android Settings › Text-to-speech output (or Accessibility › Text-to-speech) › tap ⚙ next to Speech Services by Google › Install voice data › English › pick each country (United States, United Kingdom, Australia, India…) and tap the download icon. Wi-Fi recommended. Then reopen this app.</li>';
  if(!V.length){L.insertAdjacentHTML('beforeend','<li class="vomsg">No English voices are available on this device yet. On iPhone, see Settings › Accessibility › Spoken Content › Voices.</li>'+tip);return}
  const cur=pickV(),G={};V.forEach(v=>(G[accent(v.lang)]=G[accent(v.lang)]||[]).push(v));
- const order=Object.keys(G).sort((a,b)=>(a==='American'?-1:b==='American'?1:a==='British'?-1:b==='British'?1:a.localeCompare(b)));
- order.forEach(acc=>{const h=document.createElement('li');h.className='vog';h.textContent=acc;L.appendChild(h);const g=G[acc].sort((a,b)=>(b.localService!==false)-(a.localService!==false)||a.name.localeCompare(b.name));
-  g.forEach((v,n)=>{const li=document.createElement('li');if(cur&&v.name===cur.name&&NL(v.lang)===NL(cur.lang))li.className='on';const r=rc(v.lang);
-   li.innerHTML='<div class="vn"><b></b><small></small></div><button>Preview</button>';li.querySelector('b').textContent=acc+(r?' ('+(r==='GB'?'UK':r)+')':'')+(g.length>1?' '+(n+1):'');
+ const order=Object.keys(G).sort((a,b)=>(a==='American'?-1:b==='American'?1:a==='British'?-1:b==='British'?1:a.localeCompare(b)));let shown=0;
+ order.forEach(acc=>{const all=G[acc].sort((a,b)=>(gender(a)||'Z').localeCompare(gender(b)||'Z')||(b.localService!==false)-(a.localService!==false)||a.name.localeCompare(b.name));
+  const cnt={},tot={};all.forEach(v=>{const g=gender(v)||'Voice';tot[g]=(tot[g]||0)+1});
+  const lab=new Map();all.forEach(v=>{const g=gender(v)||'Voice';cnt[g]=(cnt[g]||0)+1;lab.set(v,acc+' · '+g+(tot[g]>1||g==='Voice'?' '+cnt[g]:''))});
+  const g=all.filter(v=>gf==='all'||gender(v)===gf);if(!g.length)return;
+  const h=document.createElement('li');h.className='vog';h.textContent=acc+' ('+(rc(g[0].lang)==='GB'?'UK':rc(g[0].lang))+')';L.appendChild(h);
+  g.forEach(v=>{shown++;const li=document.createElement('li');if(cur&&v.name===cur.name&&NL(v.lang)===NL(cur.lang))li.className='on';
+   li.innerHTML='<div class="vn"><b></b><small></small></div><button>Preview</button>';li.querySelector('b').textContent=lab.get(v);
    const fr=friendly(v);li.querySelector('small').textContent=(v.localService===false?'Needs internet':'Works offline')+(fr&&!/english|-x-|^en[-_]/i.test(fr)?' · '+fr:'');
-   li.onclick=e=>{if(e.target.tagName==='BUTTON')return;voName=v.name;localStorage.setItem('mybible.lsVoice',voName);drawVo();toast('Voice: '+li.querySelector('b').textContent);if(playing&&!paused)play(idx,false)};
-   li.querySelector('button').onclick=()=>{if(playing&&!paused){gen++;SS.cancel();paused=true;setIcon();mark()}const u=new SpeechSynthesisUtterance('For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.');u.voice=v;u.lang=NL(v.lang);u.rate=rate;u.pitch=pitch;SS.cancel();SS.speak(u)};
-   L.appendChild(li)})});L.insertAdjacentHTML('beforeend',tip)}
+   li.onclick=e=>{if(e.target.tagName==='BUTTON')return;voName=v.name;localStorage.setItem('mybible.lsVoice',voName);drawVo();toast('Voice: '+lab.get(v));if(playing&&!paused)play(idx,false)};
+   li.querySelector('button').onclick=()=>{if(playing&&!paused){gen++;SS.cancel();paused=true;setIcon();mark()}const u=new SpeechSynthesisUtterance('For God so loved the world, that He gave His only begotten Son, that whosoever believeth in Him should not perish, but have everlasting life.');u.voice=v;u.lang=NL(v.lang);u.rate=rate;u.pitch=pitch;SS.cancel();SS.speak(u)};
+   L.appendChild(li)})});
+ if(!shown)L.insertAdjacentHTML('beforeend','<li class="vomsg">No '+gf.toLowerCase()+' voices found on this phone yet. See the tip below to download more.</li>');
+ L.insertAdjacentHTML('beforeend',tip)}
+function drawHR(L){L.insertAdjacentHTML('beforeend','<li class="vomsg">Real people reading the King James Bible, recorded by LibriVox volunteers and free to use (public domain). Plays from archive.org, so it needs internet. No verse highlighting in this mode; ‹‹ and ›› skip 15 seconds.</li>');
+ const box=document.createElement('div');L.appendChild(box);box.innerHTML='<li class="vomsg">Loading recordings…</li>';
+ loadLV().then(()=>{box.innerHTML='';const o=hopts(state.b,state.c),cur=hcur||hpick(state.b,state.c);
+  const h=document.createElement('li');h.className='vog';h.textContent='Readers for '+BIBLE[state.b][0]+' '+(state.c+1);box.appendChild(h);
+  if(!o.length){box.insertAdjacentHTML('beforeend','<li class="vomsg">No recording for this chapter. Device voices will be used.</li>');return}
+  o.forEach(x=>{const li=document.createElement('li');if(cur&&x.u===cur.u)li.className='on';li.innerHTML='<div class="vn"><b></b><small></small></div><button>Play</button>';
+   li.querySelector('b').textContent=(x.d?'Dramatized · ':'')+(x.r.split(',').length>2?x.r.split(',').slice(0,2).join(',')+' & '+(x.r.split(',').length-2)+' more':x.r);
+   li.querySelector('small').textContent=(x.a===x.z?'This chapter only':'Chapters '+x.a+'–'+x.z+(x.a!==state.c+1?' · starts at chapter '+x.a:''))+' · LibriVox';
+   const go=()=>{hrName=x.r;localStorage.setItem('mybible.lsHR',hrName);if(SS)SS.cancel();gen++;hPlay(x);$('voSheet').classList.remove('open')};
+   li.onclick=e=>{if(e.target.tagName==='BUTTON')return;go()};li.querySelector('button').onclick=go;box.appendChild(li)})}).catch(()=>{box.innerHTML='<li class="vomsg">Couldn\'t load the recordings list. Check your internet connection.</li>'})}
 $('lsVo').onclick=()=>{drawVo();$('voSheet').classList.add('open')};$('voX').onclick=()=>{$('voSheet').classList.remove('open')};
 if(SS){if(SS.addEventListener)SS.addEventListener('voiceschanged',()=>{if($('voSheet').classList.contains('open'))drawVo()});SS.getVoices();startKA()}
 // stop on manual chapter change; keep highlight on re-render of same chapter
 const R0=render;render=function(){const r=R0.apply(this,arguments);if((playing||paused)&&!auto&&(state.b!==lb||state.c!==lc)){stop();idx=-1;ref()}else{mark();ref()}return r};
-document.addEventListener('visibilitychange',()=>{});window.__ls={get playing(){return playing},get idx(){return idx},get paused(){return paused}};
+document.addEventListener('visibilitychange',()=>{});window.__ls={get hcur(){return hcur},get A(){return A},get playing(){return playing},get idx(){return idx},get paused(){return paused}};
 })();
 </script></body></html>
