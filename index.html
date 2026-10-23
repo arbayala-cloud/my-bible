@@ -136,16 +136,30 @@ body:has(#bar.open) #toast,body:has(#hlSheet.open) #toast{opacity:0!important}
 #bar button{flex:0 0 auto!important;flex-direction:row!important;gap:6px!important;padding:12px 16px!important;font-size:15px!important;border:1px solid var(--line)!important;border-radius:22px!important;white-space:nowrap}
 #bar .x{flex:0 0 46px!important;padding:12px 0!important;position:sticky;right:0;background:var(--bg)!important;opacity:1}
 #bar .lbl{position:fixed;bottom:84px;top:auto}
-</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-bm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10a1 1 0 0 1 1 1V20.5l-6-4-6 4V4.5a1 1 0 0 1 1-1z"/></symbol><symbol id="i-hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5l4.5 4.5-8.5 8.5H6.5V13z"/><path d="M13 6.5l4.5 4.5"/><path d="M4 20.5h16"/></symbol><symbol id="i-nt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.8l3.7 3.7L9 18.7l-4.6 1 1-4.6z"/><path d="M14.5 5.8l3.7 3.7"/></symbol><symbol id="i-jr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1h-11a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2z"/><path d="M8.5 3.5v17"/><path d="M11.5 8h4M11.5 11h4"/></symbol><symbol id="i-set" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-bk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 2.5v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol><symbol id="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8" width="11" height="12" rx="2"/><path d="M15.5 8V6a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/></symbol><symbol id="i-df" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2.5-1 5-1 7 .5v12c-2-1.5-4.5-1.5-7-.5z"/><path d="M11 6c1.5-1.1 3.4-1.4 5.5-.9"/><path d="M11 18v-1"/><circle cx="17" cy="12.5" r="2.8"/><path d="M19 14.6l2.2 2.2"/></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7L7 17"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol></svg>
+
+#vsScrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:13}#vsScrim.open{display:block}
+#vs{display:none;position:fixed;left:0;right:0;bottom:0;max-height:75vh;overflow:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom));z-index:14;box-shadow:0 -6px 24px rgba(0,0,0,.25)}#vs.open{display:block}
+.vsh{display:flex;justify-content:space-between;align-items:center;font-size:18px}#vs .vt{font-size:15px;opacity:.8;margin:6px 0 12px;max-height:5.5em;overflow:hidden}
+.vsb{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:transparent;font-size:16px;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:8px}
+.vsl{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin:14px 0 6px}
+#vsF{display:flex;flex-wrap:wrap;gap:8px}#vsF button{padding:9px 14px;border-radius:20px;border:1px solid var(--line);background:transparent;font-size:15px}
+#vsF button.on{background:#3d5a80;color:#fff;border-color:#3d5a80}
+.ic-fd{color:#b5762b}.dl i.p3{color:#b5762b}
+.fdh{display:flex;align-items:center;justify-content:space-between;margin-top:18px;border-bottom:1px solid var(--line);padding-bottom:6px}.fdh b{font-size:18px}.fdh span button{border:0;background:transparent;font-size:14px;opacity:.7;padding:4px 8px}
+#fdBody ul{list-style:none;padding:0;margin:0}#fdBody .ref{font-weight:bold}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-bm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10a1 1 0 0 1 1 1V20.5l-6-4-6 4V4.5a1 1 0 0 1 1-1z"/></symbol><symbol id="i-hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5l4.5 4.5-8.5 8.5H6.5V13z"/><path d="M13 6.5l4.5 4.5"/><path d="M4 20.5h16"/></symbol><symbol id="i-nt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.8l3.7 3.7L9 18.7l-4.6 1 1-4.6z"/><path d="M14.5 5.8l3.7 3.7"/></symbol><symbol id="i-jr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1h-11a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2z"/><path d="M8.5 3.5v17"/><path d="M11.5 8h4M11.5 11h4"/></symbol><symbol id="i-set" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-bk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 2.5v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol><symbol id="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8" width="11" height="12" rx="2"/><path d="M15.5 8V6a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/></symbol><symbol id="i-df" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2.5-1 5-1 7 .5v12c-2-1.5-4.5-1.5-7-.5z"/><path d="M11 6c1.5-1.1 3.4-1.4 5.5-.9"/><path d="M11 18v-1"/><circle cx="17" cy="12.5" r="2.8"/><path d="M19 14.6l2.2 2.2"/></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7L7 17"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-fd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4l2 2h8a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/></symbol></svg>
 <header id="hdr"><button id="menuBtn" class="ib" aria-label="Menu"><svg class="ic ic-menu"><use href="#i-menu"/></svg></button><button id="refBtn"><span id="refTxt"></span><span class="car">▾</span></button><span class="ib sp2"></span>
-<div style="display:none"><select id="book"></select><select id="chap"></select><button id="bmBtn"></button><button id="ntBtn"></button><button id="hlBtn"></button><button id="setBtn"></button></div></header>
+<div style="display:none"><select id="book"></select><select id="chap"></select><button id="bmBtn"></button><button id="ntBtn"></button><button id="hlBtn"></button><button id="setBtn"></button><button id="fdBtn"></button></div></header>
 <div id="scrim"></div>
 <aside id="drawer" aria-hidden="true"><div class="dh"><div><div class="dt">My Holy Bible</div><div class="ds">King James Version</div></div><button id="drX" class="ib" aria-label="Close"><svg class="ic ic-x"><use href="#i-x"/></svg></button></div>
-<nav class="dl"><button data-a="bmBtn"><i><svg class="ic ic-bm"><use href="#i-bm"/></svg></i>Bookmarks</button><button data-a="hlBtn"><i class=p2><svg class="ic ic-hl"><use href="#i-hl"/></svg></i>Highlights</button><button data-a="ntBtn"><i><svg class="ic ic-nt"><use href="#i-nt"/></svg></i>Notes</button><button data-a="jr"><i class=p2><svg class="ic ic-jr"><use href="#i-jr"/></svg></i>Journal</button><hr><button data-a="setBtn"><i><svg class="ic ic-set"><use href="#i-set"/></svg></i>Reading Settings</button><button data-a="bk"><i class=p2><svg class="ic ic-bk"><use href="#i-bk"/></svg></i>Backup</button></nav></aside>
+<nav class="dl"><button data-a="bmBtn"><i><svg class="ic ic-bm"><use href="#i-bm"/></svg></i>Bookmarks</button><button data-a="hlBtn"><i class=p2><svg class="ic ic-hl"><use href="#i-hl"/></svg></i>Highlights</button><button data-a="ntBtn"><i><svg class="ic ic-nt"><use href="#i-nt"/></svg></i>Notes</button><button data-a="jr"><i class=p2><svg class="ic ic-jr"><use href="#i-jr"/></svg></i>Journal</button><button data-a="fdBtn"><i class=p3><svg class="ic ic-fd"><use href="#i-fd"/></svg></i>Folders</button><hr><button data-a="setBtn"><i><svg class="ic ic-set"><use href="#i-set"/></svg></i>Reading Settings</button><button data-a="bk"><i class=p2><svg class="ic ic-bk"><use href="#i-bk"/></svg></i>Backup</button></nav></aside>
 <div id="picker"><div class="ph"><button id="pkBack" class="ib">‹</button><div id="pkT">Books</div><button id="pkX" class="ib">✕</button></div><div id="pkBody"></div></div>
 <main><h1 id="title"></h1><div id="text"></div>
 <nav class="pn"><button id="prev">‹ Prev</button><button id="next">Next ›</button></nav></main>
 <div id="panel"><button id="close">✕ Close</button><h2><svg class="ic ic-bm"><use href="#i-bm"/></svg>Bookmarks</h2><ul id="list"></ul></div>
+<div id="vsScrim"></div><div id="vs"><div class="vsh"><b id="vsRef"></b><button id="vsX" class="ib">✕</button></div><p class="vt" id="vsTxt"></p>
+<button id="vsBm" class="vsb"></button><div class="vsl">Save to folder</div><div id="vsF"></div><button id="vsNew" class="vsb">＋ New folder</button></div>
+<div id="fdSheet" class="sheet"><button id="fdClose">✕ Close</button><h2><svg class="ic ic-fd"><use href="#i-fd"/></svg>Folders</h2><div id="fdBody"></div></div>
 <div id="bar"><span class="lbl" id="barRef"></span><button id="barHl"><svg class="ic ic-hl"><use href="#i-hl"/></svg>Highlight</button><button id="barNote"><svg class="ic ic-nt"><use href="#i-nt"/></svg>Note</button><button id="barDef"><svg class="ic ic-df"><use href="#i-df"/></svg>Define</button><button id="barCopy"><svg class="ic ic-cp"><use href="#i-cp"/></svg>Copy</button><button class="x" id="barX">✕</button></div>
 <div id="noteSheet" class="sheet"><button id="noteClose">✓ Done</button><h2 id="noteRef"></h2><p class="vt" id="noteVerse"></p>
 <textarea id="noteText" placeholder="Write your note on this verse…"></textarea><div class="saved" id="noteSaved"></div>
@@ -278,7 +292,7 @@ $('text').addEventListener('click',e=>{const p=e.target.closest('.v');
   if(e.target.closest('.nm')){e.stopPropagation();clearSel();closeBar();openNote(state.b,state.c,+p.dataset.v);return}
   if(lpFired){lpFired=false;return}
   const s=getSelection();if(!s.isCollapsed||$('bar').classList.contains('open')){clearSel();closeBar();return}
-  if(!p)return;toggle(+p.dataset.v)});
+  if(!p)return;openVS(+p.dataset.v)});
 
 // ---- Highlights ----
 const PRE=['#ffeb3b','#ffb300','#ff7043','#f06292','#ba68c8','#7986cb','#4fc3f7','#4db6ac','#81c784','#c0ca33','#a1887f','#90a4ae'];
@@ -376,12 +390,12 @@ function closeJ(){clearTimeout(jT);saveJ();jcur=null;$('jSheet').classList.remov
 $('jClose').onclick=closeJ;$('jSave').onclick=()=>{toast('Saved');closeJ()};
 $('jDel').onclick=()=>{if(!confirm('Delete this journal entry?'))return;journal=journal.filter(x=>x.id!==jcur);Store.set('journal',journal);jcur=null;$('jSheet').classList.remove('open');showJournal();toast('Entry deleted')};
 // ---- Backup ----
-$('exp').onclick=()=>{const data={app:'my-bible',version:1,exported:new Date().toISOString(),bookmarks,notes,journal,highlights:hls};
+$('exp').onclick=()=>{const data={app:'my-bible',version:1,exported:new Date().toISOString(),bookmarks,notes,journal,highlights:hls,folders:Store.get('folders',{})};
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));a.download='my-bible-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup saved')};
 $('imp').onclick=()=>$('impFile').click();
 $('impFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='my-bible')throw 0;
   Object.assign(bookmarks,d.bookmarks||{});Object.assign(notes,d.notes||{});Object.assign(hls,d.highlights||{});Store.set('highlights',hls);(d.journal||[]).forEach(j=>{if(!journal.some(x=>x.id===j.id))journal.push(j)});
-  Store.set('bookmarks',bookmarks);Store.set('notes',notes);Store.set('journal',journal);render(state.v);showNotes();toast('Backup restored')}catch(err){alert('That file is not a My Bible backup.')}e.target.value=''};
+  {const F=Store.get('folders',{});Object.entries(d.folders||{}).forEach(([n,o])=>{if(!F[n])F[n]=o;else o.v.forEach(k=>{if(!F[n].v.includes(k))F[n].v.push(k)})});Store.set('folders',F);if(typeof folders!=='undefined')Object.assign(folders,F)}Store.set('bookmarks',bookmarks);Store.set('notes',notes);Store.set('journal',journal);render(state.v);showNotes();toast('Backup restored')}catch(err){alert('That file is not a My Bible backup.')}e.target.value=''};
 
 $('book').onchange=()=>{closeBar();closeHl();state={b:+$('book').value,c:0,v:null};render()};
 $('chap').onchange=()=>{state.c=+$('chap').value;state.v=null;render()};
@@ -436,4 +450,28 @@ function chaps(bi){mode='c';$('pkT').textContent=BIBLE[bi][0];$('pkBack').style.
 $('refBtn').onclick=()=>{pk.classList.add('on');chaps(+$('book').value)};$('pkBack').onclick=books;$('pkX').onclick=()=>pk.classList.remove('on');
 
 })();
+
+// ---- Folders ----
+let folders=Store.get('folders',{}); // name -> {t, v:[keys]}
+let vsI=null;
+function saveF(){Store.set('folders',folders)}
+function openVS(i){vsI=i;state.v=i;Store.set('pos',state);$('vsRef').textContent=refName(state.b,state.c,i);$('vsTxt').textContent=BIBLE[state.b][1][state.c][i];drawVS();$('vs').classList.add('open');$('vsScrim').classList.add('open')}
+function closeVS(){$('vs').classList.remove('open');$('vsScrim').classList.remove('open')}
+function drawVS(){const k=key(state.b,state.c,vsI);$('vsBm').innerHTML=IC('bm')+(bookmarks[k]?'Remove bookmark':'Bookmark');
+ const f=$('vsF');f.innerHTML='';const ns=Object.keys(folders).sort((a,b)=>folders[a].t-folders[b].t);
+ if(!ns.length)f.innerHTML='<span style="opacity:.6;font-size:15px">No folders yet. Make your first one below.</span>';
+ ns.forEach(n=>{const b=document.createElement('button');const on=folders[n].v.includes(k);b.className=on?'on':'';b.textContent=(on?'✓ ':'')+n;
+  b.onclick=()=>{const a=folders[n].v,j=a.indexOf(k);if(j>=0){a.splice(j,1);toast('Removed from '+n)}else{a.push(k);toast('Saved to '+n)}saveF();drawVS()};f.appendChild(b)})}
+$('vsBm').onclick=()=>{toggle(vsI);drawVS()};$('vsX').onclick=closeVS;$('vsScrim').onclick=closeVS;
+$('vsNew').onclick=()=>{const n=(prompt('Name your new folder:')||'').trim();if(!n)return;if(!folders[n])folders[n]={t:Date.now(),v:[]};const k=key(state.b,state.c,vsI);if(!folders[n].v.includes(k))folders[n].v.push(k);saveF();drawVS();toast('Saved to '+n)};
+function showFolders(){const B=$('fdBody');B.innerHTML='';const ns=Object.keys(folders).sort((a,b)=>folders[a].t-folders[b].t);
+ if(!ns.length)B.innerHTML='<p class="empty">No folders yet. Tap any verse and choose “＋ New folder”.</p>';
+ ns.forEach(n=>{const h=document.createElement('div');h.className='fdh';h.innerHTML='<b></b><span><button data-r>Rename</button><button data-d>Delete</button></span>';h.firstChild.textContent=n+' ('+folders[n].v.length+')';
+  h.querySelector('[data-r]').onclick=()=>{const m=(prompt('Rename folder:',n)||'').trim();if(!m||m===n||folders[m])return;folders[m]=folders[n];delete folders[n];saveF();showFolders()};
+  h.querySelector('[data-d]').onclick=()=>{if(confirm('Delete the folder "'+n+'"? (The verses stay in your Bible.)')){delete folders[n];saveF();showFolders()}};
+  const ul=document.createElement('ul');folders[n].v.map(k=>k.split(':').map(Number)).sort((a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2]).forEach(([b,c,v])=>{const li=document.createElement('li');li.innerHTML='<span class="ref"></span><br><span></span>';
+   li.children[0].textContent=refName(b,c,v);li.children[2].textContent=BIBLE[b][1][c][v];li.onclick=()=>{$('fdSheet').classList.remove('open');state={b,c,v};render(v)};ul.appendChild(li)});
+  if(!folders[n].v.length)ul.innerHTML='<li class="empty" style="opacity:.6">Empty</li>';B.appendChild(h);B.appendChild(ul)});
+ $('fdSheet').classList.add('open')}
+$('fdBtn').onclick=showFolders;$('fdClose').onclick=()=>$('fdSheet').classList.remove('open');
 </script></body></html>
