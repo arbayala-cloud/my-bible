@@ -331,6 +331,9 @@ button.on .ti{color:currentColor!important}
 #vsSp{display:flex;align-items:flex-start;gap:8px;font-family:'Raleway',sans-serif;font-size:13.5px;color:var(--muted);margin:4px 0 2px;line-height:1.4}#vsSp[hidden]{display:none}#vsSp svg{width:16px;height:16px;flex:0 0 16px;margin-top:1px}#vsSp span b{color:var(--fg);font-weight:600}
 .spt{font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:.03em;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:0 5px;margin-right:6px;vertical-align:2px;white-space:nowrap;font-weight:normal}body:not(.spk) .spt{display:none}
 #title .cn,body.theme-antique #title .cn{font-family:'UnifrakturMaguntia',serif!important;font-weight:400!important;font-size:30px!important;color:var(--fg)!important;font-variant-numeric:normal!important;letter-spacing:.02em;line-height:1.15}
+main.swo{transition:transform .16s ease-in,opacity .16s ease-in}main.swl{transform:translateX(-28px);opacity:0}main.swr{transform:translateX(28px);opacity:0}main.swi{transition:transform .2s ease-out,opacity .2s ease-out}
+#swC{position:fixed;top:50%;width:40px;height:40px;margin-top:-20px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;z-index:8;transition:opacity .15s}#swC svg{width:20px;height:20px}#swC.on{opacity:.9}
+@media (prefers-reduced-motion:reduce){main.swo,main.swi{transition:none}main.swl,main.swr{transform:none;opacity:1}}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-sr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5"/></symbol><symbol id="i-bm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10a1 1 0 0 1 1 1V20.5l-6-4-6 4V4.5a1 1 0 0 1 1-1z"/></symbol><symbol id="i-hl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5l4.5 4.5-8.5 8.5H6.5V13z"/><path d="M13 6.5l4.5 4.5"/><path d="M4 20.5h16"/></symbol><symbol id="i-nt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.8l3.7 3.7L9 18.7l-4.6 1 1-4.6z"/><path d="M14.5 5.8l3.7 3.7"/></symbol><symbol id="i-jr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1h-11a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2z"/><path d="M8.5 3.5v17"/><path d="M11.5 8h4M11.5 11h4"/></symbol><symbol id="i-set" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol><symbol id="i-bk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l7 2.5v5.5c0 4.3-3 7.6-7 9-4-1.4-7-4.7-7-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol><symbol id="i-cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8" width="11" height="12" rx="2"/><path d="M15.5 8V6a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/></symbol><symbol id="i-df" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2.5-1 5-1 7 .5v12c-2-1.5-4.5-1.5-7-.5z"/><path d="M11 6c1.5-1.1 3.4-1.4 5.5-.9"/><path d="M11 18v-1"/><circle cx="17" cy="12.5" r="2.8"/><path d="M19 14.6l2.2 2.2"/></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 7L7 17"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-fd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4l2 2h8a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/></symbol><symbol id="i-ab" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><path d="M12 7.6v.2"/></symbol></svg>
 <header id="hdr"><button id="menuBtn" class="ib" aria-label="Menu"><svg class="ic ic-menu"><use href="#i-menu"/></svg></button><button id="refBtn"><span id="refTxt"></span><span class="car">▾</span></button><button id="lsHdr" class="ib" aria-label="Listen"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button id="srBtn" class="ib" aria-label="Search"><svg class="ic ic-sr"><use href="#i-sr"/></svg></button>
 <div style="display:none"><select id="book"></select><select id="chap"></select><button id="bmBtn"></button><button id="ntBtn"></button><button id="hlBtn"></button><button id="setBtn"></button><button id="fdBtn"></button><button id="abBtn"></button><button id="welBtn"></button><button id="instBtn"></button><button id="dcBtn"></button></div></header>
@@ -400,6 +403,7 @@ button.on .ti{color:currentColor!important}
 <div class="sw">Red letters (words of Jesus) <input type="checkbox" id="sRed"></div>
 <div class="sw">Verse numbers <input type="checkbox" id="sNum"></div>
 <div class="sw">Footnote markers <input type="checkbox" id="sFn"></div>
+<div class="sw">Swipe to change chapters <input type="checkbox" id="sSw"></div>
 <div class="sw">Speaker tags beside verses <input type="checkbox" id="sSpk"></div>
 <div class="sw">Quick read (bold first letters) <input type="checkbox" id="sQr"></div>
 <div class="row"><div class="welset"><h3>Book introductions</h3><div class="seg" id="biSeg"><button data-v="on">Show</button><button data-v="off">Hide</button></div></div><div class="welset"><h3>Welcome screen</h3><div class="seg" id="welSeg"><button data-v="day">Once a day</button><button data-v="always">Every time</button><button data-v="off">Off</button></div></div><button id="setReset"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset to defaults</button></div></div>
@@ -629,13 +633,13 @@ let S=Object.assign({},SDEF,Store.get('settings',{}));if(localStorage.getItem('m
 function applyS(){const r=document.documentElement.style,b=document.body;
   r.setProperty('--size',S.size+'px');r.setProperty('--font',S.font);r.setProperty('--lh',S.lh);r.setProperty('--padx',S.pad+'px');r.setProperty('--align',S.align);
   b.classList.remove('theme-light','theme-sepia','theme-dark','theme-antique');b.classList.add('theme-'+S.theme);
-  b.classList.toggle('nored',!S.red);b.classList.toggle('nonum',!S.num);b.classList.toggle('nofn',!S.fn);b.classList.toggle('quick',!!S.qr);b.classList.toggle('spk',!!S.spk);$('sSpk').checked=!!S.spk;if(S.spk&&window.spTagAll)spTagAll();$('sQr').checked=!!S.qr;$('sFn').checked=S.fn;b.classList.toggle('para',S.layout==='para');
+  b.classList.toggle('nored',!S.red);b.classList.toggle('nonum',!S.num);b.classList.toggle('nofn',!S.fn);b.classList.toggle('quick',!!S.qr);$('sSw').checked=S.swipe!==false;b.classList.toggle('spk',!!S.spk);$('sSpk').checked=!!S.spk;if(S.spk&&window.spTagAll)spTagAll();$('sQr').checked=!!S.qr;$('sFn').checked=S.fn;b.classList.toggle('para',S.layout==='para');
   document.querySelector('meta[name=viewport]');
   $('sSize').value=S.size;$('sizeV').textContent=S.size+'px';$('sFont').value=S.font;document.querySelectorAll('#fontList button').forEach(b=>b.classList.toggle('on',b.dataset.f===S.font));$('sLh').value=S.lh;$('lhV').textContent=(+S.lh).toFixed(2);
   $('sPad').value=S.pad;$('padV').textContent=S.pad+'px';$('sRed').checked=S.red;$('sNum').checked=S.num;
   document.querySelectorAll('#setSheet .seg').forEach(g=>g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',S[g.dataset.k]===x.dataset.v)))}
 function setS(k,v){S[k]=v;Store.set('settings',S);applyS()}
-$('sSize').oninput=e=>setS('size',+e.target.value);$('sSpk').onchange=e=>setS('spk',e.target.checked);$('sQr').onchange=e=>setS('qr',e.target.checked);$('sFont').onchange=e=>setS('font',e.target.value);
+$('sSize').oninput=e=>setS('size',+e.target.value);$('sSw').onchange=e=>setS('swipe',e.target.checked);$('sSpk').onchange=e=>setS('spk',e.target.checked);$('sQr').onchange=e=>setS('qr',e.target.checked);$('sFont').onchange=e=>setS('font',e.target.value);
 [...$('sFont').options].forEach(o=>o.style.fontFamily=o.value);
 $('sLh').oninput=e=>setS('lh',+e.target.value);$('sPad').oninput=e=>setS('pad',+e.target.value);
 $('sRed').onchange=e=>setS('red',e.target.checked);$('sNum').onchange=e=>setS('num',e.target.checked);$('sFn').onchange=e=>setS('fn',e.target.checked);
@@ -644,6 +648,26 @@ $('setBtn').onclick=()=>{$('bar').classList.remove('open');$('setSheet').classLi
 $('setClose').onclick=()=>$('setSheet').classList.remove('open');
 $('setReset').onclick=()=>{S=Object.assign({},SDEF);Store.set('settings',S);applyS();toast('Settings reset')};
 applyS();
+</script>
+<script>
+// ---- Swipe to change chapters ----
+(function(){const M=document.querySelector('main');const C=document.createElement('div');C.id='swC';document.body.appendChild(C);
+ const RM=matchMedia('(prefers-reduced-motion: reduce)');let st=null;
+ const busy=()=>document.body.classList.contains('lock')||!!document.querySelector('.sheet.open,#panel.open,#vs.open,#bar.open,#hlSheet.open,#dfSheet.open,#drawer.on,#picker.on,#wel.on,#voSheet.open,#fnPop.open')||(getSelection&&String(getSelection()).length>0);
+ const cue=(d,x)=>{C.innerHTML=d>0?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>';C.style.left=d>0?'':'14px';C.style.right=d>0?'14px':'';C.classList.add('on')};
+ M.addEventListener('touchstart',e=>{st=null;if(S.swipe===false||e.touches.length!==1||busy())return;const t=e.touches[0];if(t.clientX<20||t.clientX>innerWidth-20)return;st={x:t.clientX,y:t.clientY,t:Date.now(),c:false}},{passive:true});
+ M.addEventListener('touchmove',e=>{if(!st)return;const t=e.touches[0],dx=t.clientX-st.x,dy=t.clientY-st.y;if(Math.abs(dy)>30&&Math.abs(dy)>Math.abs(dx)){st=null;C.classList.remove('on');return}if(Math.abs(dx)>50&&Math.abs(dx)>2*Math.abs(dy))cue(dx<0?1:-1);else C.classList.remove('on')},{passive:true});
+ M.addEventListener('touchcancel',()=>{st=null;C.classList.remove('on')});
+ M.addEventListener('touchend',e=>{const s=st;st=null;C.classList.remove('on');if(!s)return;const t=e.changedTouches[0],dx=t.clientX-s.x,dy=t.clientY-s.y,dt=Date.now()-s.t;
+  if(Math.abs(dx)<70||Math.abs(dx)<2*Math.abs(dy)||dt>700||busy()||(typeof lpFired!=='undefined'&&lpFired))return;
+  const d=dx<0?1:-1,{b,c}=state;if((d<0&&b===0&&c===0)||(d>0&&b===BIBLE.length-1&&c===BIBLE[b][1].length-1))return;
+  window.__swT=Date.now();
+  const doGo=()=>{go(d);scrollTo(0,0);setTimeout(()=>PL.save(),60)};
+  if(RM.matches){doGo();return}
+  M.classList.add('swo',d>0?'swl':'swr');setTimeout(()=>{doGo();M.classList.remove('swo','swl','swr');M.classList.add('swi',d>0?'swr':'swl');M.offsetWidth;M.classList.remove('swr','swl');setTimeout(()=>M.classList.remove('swi'),220)},160)},{passive:true});
+ // a swipe shouldn't also count as a verse tap
+ document.addEventListener('click',e=>{if(window.__swT&&Date.now()-window.__swT<400){e.stopPropagation();e.preventDefault()}},true);
+})();
 </script>
 <script>
 // ---- Who's speaking (lazy) ----
