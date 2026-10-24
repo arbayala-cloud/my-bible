@@ -572,8 +572,8 @@ $('bmBtn').onclick=showList;$('close').onclick=()=>$('panel').classList.remove('
 render(state.v);
 
 // ---- Reading settings ----
-const SDEF={theme:'antique',size:19,font:"Georgia,'Times New Roman',serif",lh:1.65,pad:18,layout:'lines',align:'left',red:true,num:true,fn:true};
-let S=Object.assign({},SDEF,Store.get('settings',{}));if(!localStorage.getItem('mybible.antiqueOnce')){S.theme='antique';Store.set('settings',S);localStorage.setItem('mybible.antiqueOnce','1')}
+const SDEF={theme:'light',size:19,font:"Georgia,'Times New Roman',serif",lh:1.65,pad:18,layout:'lines',align:'left',red:true,num:true,fn:true};
+let S=Object.assign({},SDEF,Store.get('settings',{}));if(localStorage.getItem('mybible.antiqueOnce')==='1'&&!localStorage.getItem('mybible.antiqueUndo')){if(S.theme==='antique'){S.theme=localStorage.getItem('mybible.preAntique')||'light';Store.set('settings',S)}localStorage.setItem('mybible.antiqueUndo','1')}
 function applyS(){const r=document.documentElement.style,b=document.body;
   r.setProperty('--size',S.size+'px');r.setProperty('--font',S.font);r.setProperty('--lh',S.lh);r.setProperty('--padx',S.pad+'px');r.setProperty('--align',S.align);
   b.classList.remove('theme-light','theme-sepia','theme-dark','theme-antique');b.classList.add('theme-'+S.theme);
