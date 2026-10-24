@@ -1,4 +1,5 @@
-const V='e7c0ed9389';const CORE='mhb-core-'+V,DATA='mhb-data-'+V,FONTS='mhb-fonts';
+const V='796724e0d6';const CORE='mhb-core-'+V,DATA='mhb-data-'+V,FONTS='mhb-fonts';
+// rename v27
 const PRE=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/favicon-32.png','./definitions.json','./xrefs.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CORE).then(c=>c.addAll(PRE)))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('mhb-')&&k!==CORE&&k!==DATA&&k!==FONTS).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
