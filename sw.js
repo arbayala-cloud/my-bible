@@ -10,3 +10,4 @@ self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET')return;c
  if(u.origin===location.origin){e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(res=>{if(res.ok){const cp=res.clone();caches.open(DATA).then(c=>c.put(r,cp))}return res})));return}
  if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com'){e.respondWith(caches.open(FONTS).then(c=>c.match(r).then(m=>{const n=fetch(r).then(res=>{if(res.ok||res.type==='opaque')c.put(r,res.clone());return res}).catch(()=>m);return m||n})));return}
 });
+// holiday-icons: fall 2026-10-25
