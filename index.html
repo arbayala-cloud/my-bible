@@ -359,6 +359,9 @@ main.swo{transition:transform .16s ease-in,opacity .16s ease-in}main.swl{transfo
 #qrCel .cb{background:var(--bg);color:var(--fg);border-radius:22px;padding:24px 26px;text-align:center;max-width:300px;box-shadow:0 10px 40px #0005;animation:qpop .45s cubic-bezier(.2,1.4,.4,1)}@keyframes qpop{from{transform:scale(.6);opacity:0}}
 #qrCel svg{width:120px;height:120px}#qrCel h3{font-family:'Raleway',sans-serif;margin:8px 0 4px}#qrCel p{margin:0 0 14px;color:var(--muted);font-size:14px}#qrCel #qrCelX{padding:10px 22px;border-radius:999px;border:0;background:var(--gold,#b08a3e);color:#fff;font-weight:700;cursor:pointer}
 #qrCel .ray{animation:qspin 6s linear infinite;transform-origin:60px 60px}@keyframes qspin{to{transform:rotate(360deg)}}
+.neon{color:#141414!important;box-shadow:0 0 6px var(--ng),0 0 14px var(--ng);animation:npulse 2.6s ease-in-out infinite;position:relative}
+@keyframes npulse{50%{box-shadow:0 0 9px var(--ng),0 0 22px var(--ng)}}
+@media (prefers-reduced-motion:reduce){.neon{animation:none}}
 </style><style id="hlsmooth">.v .w,.v .sp,.v .fnw{border-radius:0!important;padding:.14em 0!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;vertical-align:baseline;transition:none}
 .v .w.hs{border-top-left-radius:.22em!important;border-bottom-left-radius:.22em!important;margin-left:-.12em;padding-left:.12em!important}.v .he{border-top-right-radius:.22em!important;border-bottom-right-radius:.22em!important;margin-right:-.12em;padding-right:.12em!important}
 .v .w b.q{font-size:inherit;line-height:inherit;vertical-align:baseline;padding:0;margin:0;background:none}
@@ -445,7 +448,7 @@ main.swo{transition:transform .16s ease-in,opacity .16s ease-in}main.swl{transfo
 <div class="sws" id="hlPre"></div><div class="prev" id="hlRecL">Recent colors</div><div class="sws" id="hlRec"></div>
 <div class="row"><button id="hlWheelBtn"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".6"/><circle cx="17.5" cy="10.5" r=".6"/><circle cx="8.5" cy="7.5" r=".6"/><circle cx="6.5" cy="12.5" r=".6"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.56-2.5 5.56-5.55C21.97 6.01 17.46 2 12 2z"/></svg>Color wheel</button><span style="flex:0 0 auto;align-self:center">Color: <span id="hlCur"></span></span></div>
 <div id="wheelBox"><canvas id="wheel" width="440" height="440"></canvas><label>Brightness</label><input type="range" id="hlVal" min="20" max="100" value="100">
-<div class="row" style="justify-content:center;align-items:center">Or exact color: <input type="color" id="hlNative" style="width:60px;height:40px"></div></div>
+<div class="row" style="justify-content:center;align-items:center">Or exact color: <input type="color" id="hlNative" style="width:60px;height:40px"></div></div><div class="row" id="hlNeonRow" style="align-items:center;gap:10px"><span style="font-size:14px;color:var(--muted)">Style</span><div class="seg" id="hlNeon"><button type="button" data-n="0">Normal</button><button type="button" data-n="1">Neon</button></div></div>
 <label>See-through <span class="val" id="hlAV"></span></label><input type="range" id="hlA" min="15" max="85" value="40">
 <div class="row"><button id="hlOk">✓ Done</button><button id="hlDel"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>Remove</button><button id="hlCancel">✕ Cancel</button></div></div>
 <div id="dfScrim"></div><div id="dfSheet" role="dialog" aria-label="Definition"><div class="grab"></div><div class="dfh"><svg class="ic ic-df"><use href="#i-df"/></svg><h3 id="dfWord"></h3><button id="dfX" aria-label="Close"><svg class="ic ic-x"><use href="#i-x"/></svg></button></div><div id="dfBody"></div></div><div id="toast"></div>
@@ -544,25 +547,27 @@ $('text').addEventListener('click',e=>{const p=e.target.closest('.v');
 
 // ---- Highlights ----
 const PRE=['#ffeb3b','#ffb300','#ff7043','#f06292','#ba68c8','#7986cb','#4fc3f7','#4db6ac','#81c784','#c0ca33','#a1887f','#90a4ae'];
-let recent=Store.get('hlRecent',[]),hlA=Store.get('hlAlpha',0.4),hcol=recent[0]||PRE[0],hv=null,hsel=null,hEdit=null,anchor=null;
+let hlN=!!Store.get('hlNeon',false),recent=Store.get('hlRecent',[]),hlA=Store.get('hlAlpha',0.4),hcol=recent[0]||PRE[0],hv=null,hsel=null,hEdit=null,anchor=null;
 const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+function hpaint(el,h){el.style.background=h.n?rgba(h.c,1):rgba(h.c,h.a);if(h.n){el.classList.add('neon');el.style.setProperty('--ng',rgba(h.c,.75))}}
 function wordsOf(p){return [...p.querySelectorAll('.w')]}
 function paintV(i,prev){const p=$('text').children[i];if(!p)return;const L=hls[key(state.b,state.c,i)]||[];const ws=wordsOf(p);
-  ws.forEach(w=>{w.style.background='';w.classList.remove('pick','hs','he')});p.querySelectorAll('.sp,.fnw').forEach(s=>s.style.background='');
+  ws.forEach(w=>{w.style.background='';w.classList.remove('pick','hs','he','neon')});p.querySelectorAll('.sp,.fnw').forEach(s=>{s.style.background='';s.classList.remove('neon')});
   const col=ws.map(()=>null);L.forEach((h,j)=>{for(let x=h.s;x<=h.e&&x<ws.length;x++)col[x]=[h,j]});
   if(prev)for(let x=prev.s;x<=prev.e;x++)col[x]=[prev,-1];
-  ws.forEach((w,x)=>{if(col[x])w.style.background=rgba(col[x][0].c,col[x][0].a);w.dataset.h=col[x]?col[x][1]:'';
+  ws.forEach((w,x)=>{if(col[x])hpaint(w,col[x][0]);w.dataset.h=col[x]?col[x][1]:'';
     if(!col[x])return;const bg=rgba(col[x][0].c,col[x][0].a),same=col[x+1]&&col[x+1][0]===col[x][0];if(!(col[x-1]&&col[x-1][0]===col[x][0]))w.classList.add('hs');
-    let s=w.nextSibling,end=w;while(s&&!(s.classList&&s.classList.contains('w'))){if(s.classList&&s.classList.contains('fnw')){s.style.background=bg;end=s}else if(same&&s.classList&&s.classList.contains('sp'))s.style.background=bg;else if(!same)break;s=s.nextSibling}
+    let s=w.nextSibling,end=w;while(s&&!(s.classList&&s.classList.contains('w'))){if(s.classList&&s.classList.contains('fnw')){hpaint(s,col[x][0]);end=s}else if(same&&s.classList&&s.classList.contains('sp'))hpaint(s,col[x][0]);else if(!same)break;s=s.nextSibling}
     if(!same)end.classList.add('he')});
   if(hOpen&&pend)pend.forEach(r=>{if(r.i===i)for(let x=r.s;x<=r.e;x++)ws[x]&&ws[x].classList.add('pick')})}
-function setRuns(k,n,fn){const m=Array(n).fill(null);(hls[k]||[]).forEach(h=>{for(let x=h.s;x<=h.e&&x<n;x++)m[x]={c:h.c,a:h.a}});fn(m);
-  const out=[];m.forEach((v,x)=>{const l=out[out.length-1];if(!v)return;if(l&&l.e===x-1&&l.c===v.c&&l.a===v.a)l.e=x;else out.push({s:x,e:x,c:v.c,a:v.a})});
+function setRuns(k,n,fn){const m=Array(n).fill(null);(hls[k]||[]).forEach(h=>{for(let x=h.s;x<=h.e&&x<n;x++)m[x]=h.n?{c:h.c,a:h.a,n:1}:{c:h.c,a:h.a}});fn(m);
+  const out=[];m.forEach((v,x)=>{const l=out[out.length-1];if(!v)return;if(l&&l.e===x-1&&l.c===v.c&&l.a===v.a&&!l.n===!v.n)l.e=x;else out.push(v.n?{s:x,e:x,c:v.c,a:v.a,n:1}:{s:x,e:x,c:v.c,a:v.a})});
   if(out.length)hls[k]=out;else delete hls[k];Store.set('highlights',hls)}
-function preview(){if(!hOpen||!pend)return;pend.forEach(r=>paintV(r.i,{s:r.s,e:r.e,c:hcol,a:hlA}))}
+function preview(){if(!hOpen||!pend)return;pend.forEach(r=>paintV(r.i,{s:r.s,e:r.e,c:hcol,a:hlA,n:hlN?1:0}))}
 function drawSw(){const mk=(el,arr)=>{el.innerHTML='';arr.forEach(c=>{const b=document.createElement('b');b.style.background=c;b.dataset.c=c;if(c===hcol)b.className='on';el.appendChild(b)})};
   mk($('hlPre'),PRE);mk($('hlRec'),recent);$('hlRecL').style.display=$('hlRec').style.display=recent.length?'':'none';
-  $('hlCur').style.background=rgba(hcol,hlA);$('hlNative').value=hcol;$('hlA').value=Math.round(hlA*100);$('hlAV').textContent=Math.round(hlA*100)+'%'}
+  $('hlCur').style.background=rgba(hcol,hlA);$('hlNative').value=hcol;$('hlA').value=Math.round(hlA*100);$('hlAV').textContent=Math.round(hlA*100)+'%';document.querySelectorAll('#hlNeon button').forEach(b=>b.classList.toggle('on',(b.dataset.n==='1')===hlN));$('hlCur').classList.toggle('neon',hlN);$('hlCur').style.setProperty('--ng',rgba(hcol,.75))}
+$('hlNeon').onclick=e=>{const b=e.target.closest('button');if(!b)return;hlN=b.dataset.n==='1';Store.set('hlNeon',hlN);drawSw();preview()};
 function setCol(c){hcol=c;drawSw();preview()}
 ['hlPre','hlRec'].forEach(id=>$(id).onclick=e=>{const b=e.target.closest('b');if(b)setCol(b.dataset.c)});
 $('hlA').oninput=e=>{hlA=+e.target.value/100;Store.set('hlAlpha',hlA);drawSw();preview()};
@@ -577,7 +582,7 @@ function closeHl(){const P=pend;hOpen=false;pend=null;document.body.classList.re
   P&&P.forEach(r=>paintV(r.i))}
 function pushRecent(){recent=[hcol,...recent.filter(c=>c!==hcol)].slice(0,8);Store.set('hlRecent',recent)}
 function applyP(fn){pend.forEach(r=>{const n=wordsOf($('text').children[r.i]).length;setRuns(key(state.b,state.c,r.i),n,m=>{for(let x=r.s;x<=r.e;x++)m[x]=fn()})})}
-$('hlOk').onclick=()=>{pushRecent();applyP(()=>({c:hcol,a:hlA}));toast('Highlighted');closeHl()};
+$('hlOk').onclick=()=>{pushRecent();applyP(()=>hlN?{c:hcol,a:hlA,n:1}:{c:hcol,a:hlA});toast(hlN?'Neon highlight':'Highlighted');closeHl()};
 $('hlDel').onclick=()=>{applyP(()=>null);toast('Highlight removed');closeHl()};
 $('hlCancel').onclick=closeHl;
 // color wheel (hue = angle, saturation = distance from center, brightness slider)
@@ -594,10 +599,10 @@ function showHls(){const l=$('hlist');l.innerHTML='';const ks=Object.keys(hls).m
   if(!ks.length)l.innerHTML='<li class="empty">No highlights yet. Press and hold on a verse, drag to pick your words, then tap Highlight.</li>';
   ks.forEach(([b,c,v])=>hls[key(b,c,v)].slice().forEach(h=>{const ws=BIBLE[b][1][c][v].split(/\s+/).filter(Boolean),li=document.createElement('li');
     li.innerHTML='<span class="ref"></span><div class="ht"></div><div class="row"><button class="hc"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".6"/><circle cx="17.5" cy="10.5" r=".6"/><circle cx="8.5" cy="7.5" r=".6"/><circle cx="6.5" cy="12.5" r=".6"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.56-2.5 5.56-5.55C21.97 6.01 17.46 2 12 2z"/></svg>Change color</button><button class="hd"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>Remove</button></div>';
-    li.querySelector('.ref').innerHTML=IC('hl')+refName(b,c,v);const s=li.querySelector('.ht');const sp=document.createElement('span');sp.textContent=ws.slice(h.s,h.e+1).join(' ');sp.style.background=rgba(h.c,h.a);s.appendChild(sp);
+    li.querySelector('.ref').innerHTML=IC('hl')+refName(b,c,v);const s=li.querySelector('.ht');const sp=document.createElement('span');sp.textContent=ws.slice(h.s,h.e+1).join(' ');hpaint(sp,h);s.appendChild(sp);
     const jump=()=>{$('hlPage').classList.remove('open');state={b,c,v};render(v)};
     li.querySelector('.ref').onclick=jump;s.onclick=jump;
-    li.querySelector('.hc').onclick=()=>{jump();hcol=h.c;hlA=h.a;openHl([{i:v,s:h.s,e:h.e}])};
+    li.querySelector('.hc').onclick=()=>{jump();hcol=h.c;hlA=h.a;hlN=!!h.n;openHl([{i:v,s:h.s,e:h.e}])};
     li.querySelector('.hd').onclick=()=>{const k=key(b,c,v);hls[k]=hls[k].filter(x=>x!==h);if(!hls[k].length)delete hls[k];Store.set('highlights',hls);if(b===state.b&&c===state.c)paintV(v);toast('Highlight removed');showHls()};
     l.appendChild(li)}))}
 $('hlBtn').onclick=()=>{closeBar();showHls();$('hlPage').classList.add('open')};$('hpClose').onclick=()=>$('hlPage').classList.remove('open');
