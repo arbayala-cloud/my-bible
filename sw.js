@@ -1,4 +1,4 @@
-const V='6878c5a48d';const CORE='mhb-core-'+V,DATA='mhb-data-'+V,FONTS='mhb-fonts';
+const V='20261030a1';const CORE='mhb-core-'+V,DATA='mhb-data-'+V,FONTS='mhb-fonts';
 // rename v27
 const PRE=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/favicon-32.png','./definitions.json','./xrefs.json','./fonts/opendyslexic-latin-400-normal.woff2','./fonts/opendyslexic-latin-700-normal.woff2','./fonts/opendyslexic-latin-400-italic.woff2'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CORE).then(c=>c.addAll(PRE.map(u=>new Request(u,{cache:'reload'})))))});
